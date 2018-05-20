@@ -20,7 +20,6 @@ var fmtCmd = &cobra.Command{
 			os.Exit(2)
 		}
 
-		// output := parser.Formatter(input)
 		chg := parser.Parse(input)
 
 		var buf bytes.Buffer
