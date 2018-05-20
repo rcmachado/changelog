@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rcmachado/keepachangelog/parser"
+	"github.com/rcmachado/changelog/parser"
 	"github.com/spf13/cobra"
 )
 
