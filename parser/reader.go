@@ -15,6 +15,7 @@ import (
 // correctly parsed
 type Changelog struct {
 	Title    string
+	Preamble string
 	Versions []*Version
 }
 
@@ -48,6 +49,10 @@ func (c *Changelog) RenderVersionLinks(w io.Writer) {
 }
 
 func (c *Changelog) Render(w io.Writer) {
+	io.WriteString(w, "# ")
+	io.WriteString(w, c.Title)
+	io.WriteString(w, "\n\n")
+	io.WriteString(w, c.Preamble)
 	for _, v := range c.Versions {
 		v.Render(w)
 	}
@@ -123,8 +128,9 @@ func (s *Section) Render(w io.Writer) {
 type Reader struct {
 	blackfriday.Renderer
 	Changelog *Changelog
-	// store it in another place
-	// Versions []*Version
+
+	isInPreamble bool
+	preambleBuf  bytes.Buffer
 }
 
 var reVersion *regexp.Regexp
@@ -158,21 +164,39 @@ func (r *Reader) RenderFooter(w io.Writer, ast *blackfriday.Node) {
 
 // RenderNode is called for every node on the AST tree
 func (r *Reader) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
+	// Store it for future reference
+	var writer io.Writer
+	if r.isInPreamble {
+		writer = &r.preambleBuf
+	} else {
+		writer = w
+		// if buf has something, flush it
+		content := r.preambleBuf.Bytes()
+		if len(content) > 0 {
+			r.Changelog.Preamble = string(content)
+			r.preambleBuf.Reset()
+		}
+	}
+
 	switch node.Type {
 	case blackfriday.Heading:
-		return r.Heading(w, node, entering)
+		// overwrite buffer
+		if node.Type == blackfriday.Heading && node.HeadingData.Level == 2 {
+			writer = w
+		}
+		return r.Heading(writer, node, entering)
 	case blackfriday.List:
-		return r.List(w, node, entering)
+		return r.List(writer, node, entering)
 	case blackfriday.Item:
-		return r.ListItem(w, node, entering)
+		return r.ListItem(writer, node, entering)
 	case blackfriday.Code:
-		return r.Code(w, node, entering)
+		return r.Code(writer, node, entering)
 	case blackfriday.Text:
-		return r.Text(w, node, entering)
+		return r.Text(writer, node, entering)
 	case blackfriday.Paragraph:
-		return r.Paragraph(w, node, entering)
+		return r.Paragraph(writer, node, entering)
 	case blackfriday.Link:
-		return r.Link(w, node, entering)
+		return r.Link(writer, node, entering)
 	}
 	return blackfriday.GoToNext
 }
@@ -184,9 +208,12 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		if level == 1 {
 			buf := r.children(node, entering)
 			r.Changelog.Title = string(buf.Bytes())
+			r.isInPreamble = true
+			return blackfriday.SkipChildren
 		}
 		// It's a version
 		if level == 2 {
+			r.isInPreamble = false
 			v := Version{}
 			// we append it before because Link needs it
 			r.Changelog.Versions = append(r.Changelog.Versions, &v)
