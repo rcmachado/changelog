@@ -10,6 +10,34 @@ import (
 	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
+// Changelog is the main struct that holds all the data
+// correctly parsed
+type Changelog struct {
+	Versions []*Version
+}
+
+// LastVersion returns the last version
+// useful when parsing the changelog iteratively
+func (c *Changelog) LastVersion() *Version {
+	if len(c.Versions) > 0 {
+		return c.Versions[len(c.Versions)-1]
+	}
+
+	return nil
+}
+
+// LastSection returns the last section for the last version
+// useful when parsing the changelog iteratively
+func (c *Changelog) LastSection() *Section {
+	if v := c.LastVersion(); v != nil {
+		if len(v.Sections) > 0 {
+			return v.Sections[len(v.Sections)-1]
+		}
+	}
+
+	return nil
+}
+
 // Version stores information about the version being defined and
 // its sections
 type Version struct {
@@ -29,10 +57,12 @@ type Section struct {
 }
 
 // Reader is the implementation of blackfriday.Renderer interface
-// It parses and store information about the changelog
+// It parses the changelog file and populate correct structs
 type Reader struct {
 	blackfriday.Renderer
-	Versions []*Version
+	Changelog *Changelog
+	// store it in another place
+	// Versions []*Version
 }
 
 var reVersion *regexp.Regexp
@@ -46,7 +76,8 @@ func init() {
 func NewReader(input []byte) []byte {
 	extensions := blackfriday.NoIntraEmphasis
 
-	r := Reader{}
+	chg := Changelog{}
+	r := Reader{Changelog: &chg}
 	output := blackfriday.Run(input, blackfriday.WithExtensions(extensions), blackfriday.WithRenderer(&r))
 
 	/*versions := ""
@@ -72,7 +103,7 @@ func (r *Reader) RenderHeader(w io.Writer, ast *blackfriday.Node) {}
 
 // RenderFooter render the links to each version
 func (r *Reader) RenderFooter(w io.Writer, ast *blackfriday.Node) {
-	for _, v := range r.Versions {
+	for _, v := range r.Changelog.Versions {
 		io.WriteString(w, fmt.Sprintf("[%s]: %s\n", v.Name, v.Link))
 	}
 }
@@ -106,7 +137,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		if level == 2 {
 			v := Version{}
 			// we append it before because Link needs it
-			r.Versions = append(r.Versions, &v)
+			r.Changelog.Versions = append(r.Changelog.Versions, &v)
 
 			buf := r.children(node, entering)
 			line := string(buf.Bytes())
@@ -118,7 +149,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 				}
 			} else {
 				// now we remove it if don't needed
-				r.Versions = r.Versions[:len(r.Versions)-1]
+				r.Changelog.Versions = r.Changelog.Versions[:len(r.Changelog.Versions)-1]
 			}
 			io.WriteString(w, strings.Repeat("#", level)+" ")
 			io.WriteString(w, line)
@@ -128,7 +159,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		// It's a section
 		if level == 3 {
 			// Get current version
-			if v := r.currentVersion(); v != nil {
+			if v := r.Changelog.LastVersion(); v != nil {
 				buf := r.children(node, entering)
 				title := string(buf.Bytes())
 				v.Sections = append(v.Sections, &Section{Title: title})
@@ -145,7 +176,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 // List is called at list boundaries
 func (r *Reader) List(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
 	if entering {
-		if s := r.currentSection(); s != nil {
+		if s := r.Changelog.LastSection(); s != nil {
 			buf := r.children(node, entering)
 			s.Content = string(buf.Bytes())
 			// Uncomment when disabling output
@@ -209,7 +240,7 @@ func (r *Reader) Link(w io.Writer, node *blackfriday.Node, entering bool) blackf
 		io.WriteString(w, "]")
 		// For versions, store and print on the footer
 		if node.Parent.Type == blackfriday.Heading && node.Parent.HeadingData.Level == 2 {
-			if v := r.currentVersion(); v != nil {
+			if v := r.Changelog.LastVersion(); v != nil {
 				v.Link = string(node.LinkData.Destination)
 			}
 		} else {
@@ -228,22 +259,4 @@ func (r *Reader) children(node *blackfriday.Node, entering bool) bytes.Buffer {
 		})
 	}
 	return buf
-}
-
-func (r *Reader) currentVersion() *Version {
-	if len(r.Versions) > 0 {
-		return r.Versions[len(r.Versions)-1]
-	}
-
-	return nil
-}
-
-func (r *Reader) currentSection() *Section {
-	if v := r.currentVersion(); v != nil {
-		if len(v.Sections) > 0 {
-			return v.Sections[len(v.Sections)-1]
-		}
-	}
-
-	return nil
 }
