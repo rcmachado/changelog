@@ -19,7 +19,7 @@ var fmtCmd = &cobra.Command{
 			os.Exit(2)
 		}
 
-		output := parser.NewReader(input)
+		output := parser.Formatter(input)
 		fmt.Printf("%s", output)
 	},
 }

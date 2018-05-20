@@ -73,32 +73,6 @@ func init() {
 	reVersion = regexp.MustCompile(`(?i)\b(v?(\d+\.?)+\b|unreleased)`)
 }
 
-// NewReader creates a new Reader instance
-func NewReader(input []byte) []byte {
-	extensions := blackfriday.NoIntraEmphasis
-
-	chg := Changelog{}
-	r := Reader{Changelog: &chg}
-	output := blackfriday.Run(input, blackfriday.WithExtensions(extensions), blackfriday.WithRenderer(&r))
-
-	/*versions := ""
-	for _, v := range r.Versions {
-		versions += v.Name
-		if v.Yanked {
-			versions += "[y]"
-		}
-		for _, s := range v.Sections {
-			versions += fmt.Sprintf("=%s=", s.Title)
-			versions += fmt.Sprintf("\n%s\n", s.Content)
-		}
-		versions += "\n"
-	}
-
-	return []byte(fmt.Sprintf("%s\n\n%s", versions, output))*/
-
-	return output
-}
-
 // RenderHeader is called at the beginning of the parsing
 func (r *Reader) RenderHeader(w io.Writer, ast *blackfriday.Node) {}
 
