@@ -13,6 +13,7 @@ import (
 // Changelog is the main struct that holds all the data
 // correctly parsed
 type Changelog struct {
+	Title    string
 	Versions []*Version
 }
 
@@ -133,6 +134,10 @@ func (r *Reader) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) 
 func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
 	level := node.HeadingData.Level
 	if entering == true {
+		if level == 1 {
+			buf := r.children(node, entering)
+			r.Changelog.Title = string(buf.Bytes())
+		}
 		// It's a version
 		if level == 2 {
 			v := Version{}
