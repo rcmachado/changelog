@@ -59,6 +59,17 @@ func (c *Changelog) Render(w io.Writer) {
 	c.RenderVersionLinks(w)
 }
 
+// Version finds and returns the version `v`
+func (c *Changelog) Version(version string) *Version {
+	for _, v := range c.Versions {
+		if v.Name == version {
+			return v
+		}
+	}
+
+	return nil
+}
+
 // Version stores information about the version being defined and
 // its sections
 type Version struct {
