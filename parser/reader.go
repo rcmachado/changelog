@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"sort"
 	"strings"
 
 	blackfriday "gopkg.in/russross/blackfriday.v2"
@@ -39,6 +40,20 @@ func (c *Changelog) LastSection() *Section {
 	return nil
 }
 
+// RenderVersionLinks renders the links to each version diff
+func (c *Changelog) RenderVersionLinks(w io.Writer) {
+	for _, v := range c.Versions {
+		io.WriteString(w, fmt.Sprintf("[%s]: %s\n", v.Name, v.Link))
+	}
+}
+
+func (c *Changelog) Render(w io.Writer) {
+	for _, v := range c.Versions {
+		v.Render(w)
+	}
+	c.RenderVersionLinks(w)
+}
+
 // Version stores information about the version being defined and
 // its sections
 type Version struct {
@@ -49,12 +64,58 @@ type Version struct {
 	Sections []*Section
 }
 
+func (v *Version) renderTitle(w io.Writer) {
+	io.WriteString(w, "## ")
+	if v.Link != "" {
+		io.WriteString(w, "[")
+		io.WriteString(w, v.Name)
+		io.WriteString(w, "]")
+	} else {
+		io.WriteString(w, v.Name)
+	}
+	if v.Date != "" {
+		io.WriteString(w, " - ")
+		io.WriteString(w, v.Date)
+	}
+	if v.Yanked {
+		io.WriteString(w, " [YANKED]")
+	}
+	io.WriteString(w, "\n")
+}
+
+func (v *Version) renderSections(w io.Writer) {
+	// Make sure sections are ordered
+	sort.Slice(v.Sections, func(i, j int) bool {
+		cmp := strings.Compare(v.Sections[i].Title, v.Sections[j].Title)
+		if cmp > 0 {
+			return false
+		}
+		return true
+	})
+	for _, s := range v.Sections {
+		s.Render(w)
+	}
+}
+
+// Render the version and sections
+func (v *Version) Render(w io.Writer) {
+	v.renderTitle(w)
+	v.renderSections(w)
+}
+
 // Section holds the information about each section
 // Valid sections are "Added", "Changed", "Deprecated", "Fixed",
 // "Removed" and "Security"
 type Section struct {
 	Title   string
 	Content string
+}
+
+// Render section title and contents
+func (s *Section) Render(w io.Writer) {
+	io.WriteString(w, "### "+s.Title+"\n")
+	io.WriteString(w, s.Content)
+	io.WriteString(w, "\n")
 }
 
 // Reader is the implementation of blackfriday.Renderer interface
@@ -67,10 +128,24 @@ type Reader struct {
 }
 
 var reVersion *regexp.Regexp
+var reDate *regexp.Regexp
 
 func init() {
 	// TODO: Make it parametrizable
 	reVersion = regexp.MustCompile(`(?i)\b(v?(\d+\.?)+\b|unreleased)`)
+	reDate = regexp.MustCompile(`\b\d{4}-\d{2}-\d{2}\b`)
+}
+
+// Parse formats the input following the recommendation
+func Parse(input []byte) *Changelog {
+	extensions := blackfriday.NoIntraEmphasis
+
+	r := Reader{}
+	r.Changelog = &Changelog{}
+
+	blackfriday.Run(input, blackfriday.WithExtensions(extensions), blackfriday.WithRenderer(&r))
+
+	return r.Changelog
 }
 
 // RenderHeader is called at the beginning of the parsing
@@ -78,9 +153,7 @@ func (r *Reader) RenderHeader(w io.Writer, ast *blackfriday.Node) {}
 
 // RenderFooter render the links to each version
 func (r *Reader) RenderFooter(w io.Writer, ast *blackfriday.Node) {
-	for _, v := range r.Changelog.Versions {
-		io.WriteString(w, fmt.Sprintf("[%s]: %s\n", v.Name, v.Link))
-	}
+	r.Changelog.RenderVersionLinks(w)
 }
 
 // RenderNode is called for every node on the AST tree
@@ -120,11 +193,13 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 
 			buf := r.children(node, entering)
 			line := string(buf.Bytes())
-			version := reVersion.FindString(line)
-			if version != "" {
+			if version := reVersion.FindString(line); version != "" {
 				v.Name = version
 				if strings.HasSuffix(line, "[YANKED]") {
 					v.Yanked = true
+				}
+				if date := reDate.FindString(line); date != "" {
+					v.Date = date
 				}
 			} else {
 				// now we remove it if don't needed

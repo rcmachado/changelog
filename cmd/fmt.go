@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -19,7 +20,13 @@ var fmtCmd = &cobra.Command{
 			os.Exit(2)
 		}
 
-		output := parser.Formatter(input)
+		// output := parser.Formatter(input)
+		chg := parser.Parse(input)
+
+		var buf bytes.Buffer
+		chg.Render(&buf)
+		output := buf.Bytes()
+
 		fmt.Printf("%s", output)
 	},
 }
