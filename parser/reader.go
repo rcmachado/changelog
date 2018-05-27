@@ -12,18 +12,6 @@ import (
 	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
-// LastSection returns the last section for the last version
-// useful when parsing the changelog iteratively
-func LastSection(c *chg.Changelog) *chg.Change {
-	if v := c.Version(currentVersion); v != nil {
-		if len(v.Changes) > 0 {
-			return v.Changes[len(v.Changes)-1]
-		}
-	}
-
-	return nil
-}
-
 // Reader is the implementation of blackfriday.Renderer interface
 // It parses the changelog file and populate correct structs
 type Reader struct {
@@ -39,6 +27,9 @@ var reDate *regexp.Regexp
 
 // Points to the name of the current version being populated
 var currentVersion string
+
+// Type of current changelist
+var currentChangeType chg.ChangeType
 
 func init() {
 	// TODO: Make it parametrizable
@@ -133,6 +124,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 					v.Date = date
 				}
 				currentVersion = version
+				currentChangeType = 0
 			} else {
 				// now we remove it if don't needed
 				r.Changelog.Versions = r.Changelog.Versions[:len(r.Changelog.Versions)-1]
@@ -148,7 +140,13 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 			if v := r.Changelog.Version(currentVersion); v != nil {
 				buf := r.children(node, entering)
 				title := string(buf.Bytes())
-				v.Changes = append(v.Changes, chg.NewChange(title))
+				tmpChange := chg.NewChange(title)
+				change := v.Change(tmpChange.Type)
+				if change == nil {
+					change = tmpChange
+				}
+				currentChangeType = change.Type
+				v.Changes = append(v.Changes, change)
 			}
 		}
 
@@ -162,11 +160,13 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 // List is called at list boundaries
 func (r *Reader) List(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
 	if entering {
-		if s := LastSection(r.Changelog); s != nil {
-			buf := r.children(node, entering)
-			s.Content = string(buf.Bytes())
-			// Uncomment when disabling output
-			// return blackfriday.SkipChildren
+		if v := r.Changelog.Version(currentVersion); v != nil {
+			if s := v.Change(currentChangeType); s != nil {
+				buf := r.children(node, entering)
+				s.Content += string(buf.Bytes())
+				// Uncomment when disabling output
+				// return blackfriday.SkipChildren
+			}
 		}
 	} else {
 		io.WriteString(w, "\n")
