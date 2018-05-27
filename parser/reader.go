@@ -129,9 +129,6 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 				// now we remove it if don't needed
 				r.Changelog.Versions = r.Changelog.Versions[:len(r.Changelog.Versions)-1]
 			}
-			io.WriteString(w, strings.Repeat("#", level)+" ")
-			io.WriteString(w, line)
-			io.WriteString(w, "\n")
 			return blackfriday.SkipChildren
 		}
 		// It's a section
@@ -149,10 +146,6 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 				v.Changes = append(v.Changes, change)
 			}
 		}
-
-		io.WriteString(w, strings.Repeat("#", level)+" ")
-	} else {
-		w.Write([]byte{'\n'})
 	}
 	return blackfriday.GoToNext
 }
@@ -168,8 +161,6 @@ func (r *Reader) List(w io.Writer, node *blackfriday.Node, entering bool) blackf
 				// return blackfriday.SkipChildren
 			}
 		}
-	} else {
-		io.WriteString(w, "\n")
 	}
 	return blackfriday.GoToNext
 }
