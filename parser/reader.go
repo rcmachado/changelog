@@ -12,20 +12,10 @@ import (
 	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
-// LastVersion returns the last version
-// useful when parsing the changelog iteratively
-func LastVersion(c *chg.Changelog) *chg.Version {
-	if len(c.Versions) > 0 {
-		return c.Versions[len(c.Versions)-1]
-	}
-
-	return nil
-}
-
 // LastSection returns the last section for the last version
 // useful when parsing the changelog iteratively
 func LastSection(c *chg.Changelog) *chg.Change {
-	if v := LastVersion(c); v != nil {
+	if v := c.Version(currentVersion); v != nil {
 		if len(v.Changes) > 0 {
 			return v.Changes[len(v.Changes)-1]
 		}
@@ -46,6 +36,9 @@ type Reader struct {
 
 var reVersion *regexp.Regexp
 var reDate *regexp.Regexp
+
+// Points to the name of the current version being populated
+var currentVersion string
 
 func init() {
 	// TODO: Make it parametrizable
@@ -139,6 +132,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 				if date := reDate.FindString(line); date != "" {
 					v.Date = date
 				}
+				currentVersion = version
 			} else {
 				// now we remove it if don't needed
 				r.Changelog.Versions = r.Changelog.Versions[:len(r.Changelog.Versions)-1]
@@ -151,7 +145,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		// It's a section
 		if level == 3 {
 			// Get current version
-			if v := LastVersion(r.Changelog); v != nil {
+			if v := r.Changelog.Version(currentVersion); v != nil {
 				buf := r.children(node, entering)
 				title := string(buf.Bytes())
 				v.Changes = append(v.Changes, chg.NewChange(title))
@@ -232,7 +226,7 @@ func (r *Reader) Link(w io.Writer, node *blackfriday.Node, entering bool) blackf
 		io.WriteString(w, "]")
 		// For versions, store and print on the footer
 		if node.Parent.Type == blackfriday.Heading && node.Parent.HeadingData.Level == 2 {
-			if v := LastVersion(r.Changelog); v != nil {
+			if v := r.Changelog.Version(currentVersion); v != nil {
 				v.Link = string(node.LinkData.Destination)
 			}
 		} else {
