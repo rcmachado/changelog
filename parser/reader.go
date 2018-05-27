@@ -26,7 +26,7 @@ var reVersion *regexp.Regexp
 var reDate *regexp.Regexp
 
 // Points to the name of the current version being populated
-var currentVersion string
+var currentVersion *chg.Version
 
 // Type of current changelist
 var currentChangeType chg.ChangeType
@@ -121,7 +121,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 				if date := reDate.FindString(line); date != "" {
 					v.Date = date
 				}
-				currentVersion = version
+				currentVersion = &v
 				currentChangeType = 0
 			} else {
 				// now we remove it if don't needed
@@ -132,16 +132,16 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		// It's a section
 		if level == 3 {
 			// Get current version
-			if v := r.Changelog.Version(currentVersion); v != nil {
+			if currentVersion != nil {
 				buf := r.children(node, entering)
 				title := string(buf.Bytes())
 				tmpChange := chg.NewChangeList(title)
-				change := v.Change(tmpChange.Type)
+				change := currentVersion.Change(tmpChange.Type)
 				if change == nil {
 					change = tmpChange
 				}
 				currentChangeType = change.Type
-				v.Changes = append(v.Changes, change)
+				currentVersion.Changes = append(currentVersion.Changes, change)
 			}
 		}
 	}
@@ -150,8 +150,8 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 
 // ListItem is called for each item
 func (r *Reader) ListItem(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-	if v := r.Changelog.Version(currentVersion); v != nil {
-		if s := v.Change(currentChangeType); s != nil {
+	if currentVersion != nil {
+		if s := currentVersion.Change(currentChangeType); s != nil {
 			buf := r.children(node, true)
 			s.Items = append(s.Items, &chg.Item{Description: buf.String()})
 		}
@@ -202,8 +202,8 @@ func (r *Reader) Link(w io.Writer, node *blackfriday.Node, entering bool) blackf
 		io.WriteString(w, "]")
 		// For versions, store and print on the footer
 		if node.Parent.Type == blackfriday.Heading && node.Parent.HeadingData.Level == 2 {
-			if v := r.Changelog.Version(currentVersion); v != nil {
-				v.Link = string(node.LinkData.Destination)
+			if currentVersion != nil {
+				currentVersion.Link = string(node.LinkData.Destination)
 			}
 		} else {
 			s := fmt.Sprintf("(%s)", node.LinkData.Destination)
