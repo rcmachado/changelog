@@ -5,23 +5,16 @@ import (
 	"fmt"
 	"io"
 	"regexp"
-	"sort"
 	"strings"
+
+	"github.com/rcmachado/changelog/chg"
 
 	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
-// Changelog is the main struct that holds all the data
-// correctly parsed
-type Changelog struct {
-	Title    string
-	Preamble string
-	Versions []*Version
-}
-
 // LastVersion returns the last version
 // useful when parsing the changelog iteratively
-func (c *Changelog) LastVersion() *Version {
+func LastVersion(c *chg.Changelog) *chg.Version {
 	if len(c.Versions) > 0 {
 		return c.Versions[len(c.Versions)-1]
 	}
@@ -31,114 +24,21 @@ func (c *Changelog) LastVersion() *Version {
 
 // LastSection returns the last section for the last version
 // useful when parsing the changelog iteratively
-func (c *Changelog) LastSection() *Section {
-	if v := c.LastVersion(); v != nil {
-		if len(v.Sections) > 0 {
-			return v.Sections[len(v.Sections)-1]
+func LastSection(c *chg.Changelog) *chg.Change {
+	if v := LastVersion(c); v != nil {
+		if len(v.Changes) > 0 {
+			return v.Changes[len(v.Changes)-1]
 		}
 	}
 
 	return nil
-}
-
-// RenderVersionLinks renders the links to each version diff
-func (c *Changelog) RenderVersionLinks(w io.Writer) {
-	for _, v := range c.Versions {
-		io.WriteString(w, fmt.Sprintf("[%s]: %s\n", v.Name, v.Link))
-	}
-}
-
-func (c *Changelog) Render(w io.Writer) {
-	io.WriteString(w, "# ")
-	io.WriteString(w, c.Title)
-	io.WriteString(w, "\n\n")
-	io.WriteString(w, c.Preamble)
-	for _, v := range c.Versions {
-		v.Render(w)
-	}
-	c.RenderVersionLinks(w)
-}
-
-// Version finds and returns the version `v`
-func (c *Changelog) Version(version string) *Version {
-	for _, v := range c.Versions {
-		if v.Name == version {
-			return v
-		}
-	}
-
-	return nil
-}
-
-// Version stores information about the version being defined and
-// its sections
-type Version struct {
-	Name     string
-	Date     string
-	Link     string
-	Yanked   bool
-	Sections []*Section
-}
-
-func (v *Version) renderTitle(w io.Writer) {
-	io.WriteString(w, "## ")
-	if v.Link != "" {
-		io.WriteString(w, "[")
-		io.WriteString(w, v.Name)
-		io.WriteString(w, "]")
-	} else {
-		io.WriteString(w, v.Name)
-	}
-	if v.Date != "" {
-		io.WriteString(w, " - ")
-		io.WriteString(w, v.Date)
-	}
-	if v.Yanked {
-		io.WriteString(w, " [YANKED]")
-	}
-	io.WriteString(w, "\n")
-}
-
-func (v *Version) renderSections(w io.Writer) {
-	// Make sure sections are ordered
-	sort.Slice(v.Sections, func(i, j int) bool {
-		cmp := strings.Compare(v.Sections[i].Title, v.Sections[j].Title)
-		if cmp > 0 {
-			return false
-		}
-		return true
-	})
-	for _, s := range v.Sections {
-		s.Render(w)
-	}
-}
-
-// Render the version and sections
-func (v *Version) Render(w io.Writer) {
-	v.renderTitle(w)
-	v.renderSections(w)
-}
-
-// Section holds the information about each section
-// Valid sections are "Added", "Changed", "Deprecated", "Fixed",
-// "Removed" and "Security"
-type Section struct {
-	Title   string
-	Content string
-}
-
-// Render section title and contents
-func (s *Section) Render(w io.Writer) {
-	io.WriteString(w, "### "+s.Title+"\n")
-	io.WriteString(w, s.Content)
-	io.WriteString(w, "\n")
 }
 
 // Reader is the implementation of blackfriday.Renderer interface
 // It parses the changelog file and populate correct structs
 type Reader struct {
 	blackfriday.Renderer
-	Changelog *Changelog
+	Changelog *chg.Changelog
 
 	isInPreamble bool
 	preambleBuf  bytes.Buffer
@@ -154,11 +54,11 @@ func init() {
 }
 
 // Parse formats the input following the recommendation
-func Parse(input []byte) *Changelog {
+func Parse(input []byte) *chg.Changelog {
 	extensions := blackfriday.NoIntraEmphasis
 
 	r := Reader{}
-	r.Changelog = &Changelog{}
+	r.Changelog = &chg.Changelog{}
 
 	blackfriday.Run(input, blackfriday.WithExtensions(extensions), blackfriday.WithRenderer(&r))
 
@@ -170,7 +70,7 @@ func (r *Reader) RenderHeader(w io.Writer, ast *blackfriday.Node) {}
 
 // RenderFooter render the links to each version
 func (r *Reader) RenderFooter(w io.Writer, ast *blackfriday.Node) {
-	r.Changelog.RenderVersionLinks(w)
+	r.Changelog.RenderLinks(w)
 }
 
 // RenderNode is called for every node on the AST tree
@@ -217,15 +117,15 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 	level := node.HeadingData.Level
 	if entering == true {
 		if level == 1 {
-			buf := r.children(node, entering)
-			r.Changelog.Title = string(buf.Bytes())
+			// buf := r.children(node, entering)
+			// r.Changelog.Title = string(buf.Bytes())
 			r.isInPreamble = true
 			return blackfriday.SkipChildren
 		}
 		// It's a version
 		if level == 2 {
 			r.isInPreamble = false
-			v := Version{}
+			v := chg.Version{}
 			// we append it before because Link needs it
 			r.Changelog.Versions = append(r.Changelog.Versions, &v)
 
@@ -251,10 +151,10 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		// It's a section
 		if level == 3 {
 			// Get current version
-			if v := r.Changelog.LastVersion(); v != nil {
+			if v := LastVersion(r.Changelog); v != nil {
 				buf := r.children(node, entering)
 				title := string(buf.Bytes())
-				v.Sections = append(v.Sections, &Section{Title: title})
+				v.Changes = append(v.Changes, chg.NewChange(title))
 			}
 		}
 
@@ -268,7 +168,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 // List is called at list boundaries
 func (r *Reader) List(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
 	if entering {
-		if s := r.Changelog.LastSection(); s != nil {
+		if s := LastSection(r.Changelog); s != nil {
 			buf := r.children(node, entering)
 			s.Content = string(buf.Bytes())
 			// Uncomment when disabling output
@@ -303,7 +203,7 @@ func (r *Reader) Paragraph(w io.Writer, node *blackfriday.Node, entering bool) b
 	// Item will handle it's own spacing stuff
 	if entering == false {
 		if node.Parent.Type != blackfriday.Item {
-			io.WriteString(w, "\n\n")
+			io.WriteString(w, "\n")
 		}
 	}
 
@@ -332,7 +232,7 @@ func (r *Reader) Link(w io.Writer, node *blackfriday.Node, entering bool) blackf
 		io.WriteString(w, "]")
 		// For versions, store and print on the footer
 		if node.Parent.Type == blackfriday.Heading && node.Parent.HeadingData.Level == 2 {
-			if v := r.Changelog.LastVersion(); v != nil {
+			if v := LastVersion(r.Changelog); v != nil {
 				v.Link = string(node.LinkData.Destination)
 			}
 		} else {
