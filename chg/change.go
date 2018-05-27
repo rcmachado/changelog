@@ -12,8 +12,8 @@ import (
 // Valid change types are "Added", "Changed", "Deprecated", "Fixed",
 // "Removed" and "Security"
 type ChangeList struct {
-	Type    ChangeType
-	Content string
+	Type  ChangeType
+	Items []*Item
 }
 
 // ChangeType is the type of the changes
@@ -51,8 +51,15 @@ func NewChangeList(ct string) *ChangeList {
 	return change
 }
 
+// RenderItems renders all the items
+func (c *ChangeList) RenderItems(w io.Writer) {
+	for _, i := range c.Items {
+		i.Render(w)
+	}
+}
+
 // Render builds the representation of Change
 func (c *ChangeList) Render(w io.Writer) {
 	io.WriteString(w, fmt.Sprintf("### %s\n", c.Type))
-	io.WriteString(w, c.Content)
+	c.RenderItems(w)
 }

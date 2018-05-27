@@ -121,8 +121,20 @@ func TestRenderTitle(t *testing.T) {
 
 func TestRenderChanges(t *testing.T) {
 	changes := []*ChangeList{
-		&ChangeList{Type: Added, Content: "- Item 1\n- Item 2\n"},
-		&ChangeList{Type: Changed, Content: "- Item A\n- Item B\n"},
+		&ChangeList{
+			Type: Added,
+			Items: []*Item{
+				&Item{"Item 1"},
+				&Item{"Item 2"},
+			},
+		},
+		&ChangeList{
+			Type: Changed,
+			Items: []*Item{
+				&Item{"Item A"},
+				&Item{"Item B"},
+			},
+		},
 	}
 
 	v := Version{Name: "1.0.0", Changes: changes}
@@ -147,8 +159,20 @@ func TestRenderChanges(t *testing.T) {
 
 func TestVersionRender(t *testing.T) {
 	changes := []*ChangeList{
-		&ChangeList{Type: Added, Content: "- Item 1\n- Item 2\n"},
-		&ChangeList{Type: Changed, Content: "- Item A\n- Item B\n"},
+		&ChangeList{
+			Type: Added,
+			Items: []*Item{
+				&Item{"Item 1"},
+				&Item{"Item 2"},
+			},
+		},
+		&ChangeList{
+			Type: Changed,
+			Items: []*Item{
+				&Item{"Item A"},
+				&Item{"Item B"},
+			},
+		},
 	}
 
 	v := Version{Name: "1.0.0", Changes: changes}

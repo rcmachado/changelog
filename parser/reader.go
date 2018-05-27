@@ -80,8 +80,6 @@ func (r *Reader) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) 
 			writer = w
 		}
 		return r.Heading(writer, node, entering)
-	case blackfriday.List:
-		return r.List(writer, node, entering)
 	case blackfriday.Item:
 		return r.ListItem(writer, node, entering)
 	case blackfriday.Code:
@@ -150,29 +148,16 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 	return blackfriday.GoToNext
 }
 
-// List is called at list boundaries
-func (r *Reader) List(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-	if entering {
-		if v := r.Changelog.Version(currentVersion); v != nil {
-			if s := v.Change(currentChangeType); s != nil {
-				buf := r.children(node, entering)
-				s.Content += string(buf.Bytes())
-				// Uncomment when disabling output
-				// return blackfriday.SkipChildren
-			}
-		}
-	}
-	return blackfriday.GoToNext
-}
-
 // ListItem is called for each item
 func (r *Reader) ListItem(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-	if entering {
-		io.WriteString(w, "- ")
-	} else {
-		io.WriteString(w, "\n")
+	if v := r.Changelog.Version(currentVersion); v != nil {
+		if s := v.Change(currentChangeType); s != nil {
+			buf := r.children(node, true)
+			s.Items = append(s.Items, &chg.Item{Description: buf.String()})
+		}
 	}
-	return blackfriday.GoToNext
+
+	return blackfriday.SkipChildren
 }
 
 // Code handles inline code marks

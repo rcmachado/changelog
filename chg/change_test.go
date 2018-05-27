@@ -56,10 +56,37 @@ func TestNewChangeList(t *testing.T) {
 	})
 }
 
-func TestChangeRender(t *testing.T) {
-	c := ChangeList{Type: Added, Content: "something"}
+func TestChangeListRenderItems(t *testing.T) {
+	c := ChangeList{
+		Items: []*Item{
+			&Item{"Item 1"},
+			&Item{"Item 2"},
+			&Item{"Item 3"},
+		},
+	}
+	expected := `- Item 1
+- Item 2
+- Item 3
+`
 
-	expected := "### Added\nsomething"
+	var buf bytes.Buffer
+	c.RenderItems(&buf)
+	result := buf.String()
+
+	if result != expected {
+		t.Errorf("ChangeList.RenderItems failed, expected %s got %s", expected, result)
+	}
+}
+
+func TestChangeRender(t *testing.T) {
+	c := ChangeList{
+		Type: Added,
+		Items: []*Item{
+			&Item{"something"},
+		},
+	}
+
+	expected := "### Added\n- something\n"
 
 	var buf bytes.Buffer
 	c.Render(&buf)
