@@ -9,23 +9,23 @@ import (
 func TestSortChanges(t *testing.T) {
 	v := &Version{
 		Name: "1.0.0",
-		Changes: []*Change{
-			&Change{Type: Removed},
-			&Change{Type: Added},
-			&Change{Type: Fixed},
-			&Change{Type: Changed},
-			&Change{Type: Security},
-			&Change{Type: Deprecated},
+		Changes: []*ChangeList{
+			&ChangeList{Type: Removed},
+			&ChangeList{Type: Added},
+			&ChangeList{Type: Fixed},
+			&ChangeList{Type: Changed},
+			&ChangeList{Type: Security},
+			&ChangeList{Type: Deprecated},
 		},
 	}
 
-	expected := []*Change{
-		&Change{Type: Added},
-		&Change{Type: Changed},
-		&Change{Type: Deprecated},
-		&Change{Type: Fixed},
-		&Change{Type: Removed},
-		&Change{Type: Security},
+	expected := []*ChangeList{
+		&ChangeList{Type: Added},
+		&ChangeList{Type: Changed},
+		&ChangeList{Type: Deprecated},
+		&ChangeList{Type: Fixed},
+		&ChangeList{Type: Removed},
+		&ChangeList{Type: Security},
 	}
 
 	v.SortChanges()
@@ -36,12 +36,12 @@ func TestSortChanges(t *testing.T) {
 }
 
 func TestChange(t *testing.T) {
-	added := &Change{Type: Added}
-	removed := &Change{Type: Removed}
+	added := &ChangeList{Type: Added}
+	removed := &ChangeList{Type: Removed}
 
 	v := Version{
 		Name: "1.0.0",
-		Changes: []*Change{
+		Changes: []*ChangeList{
 			added,
 			removed,
 		},
@@ -120,9 +120,9 @@ func TestRenderTitle(t *testing.T) {
 }
 
 func TestRenderChanges(t *testing.T) {
-	changes := []*Change{
-		&Change{Type: Added, Content: "- Item 1\n- Item 2\n"},
-		&Change{Type: Changed, Content: "- Item A\n- Item B\n"},
+	changes := []*ChangeList{
+		&ChangeList{Type: Added, Content: "- Item 1\n- Item 2\n"},
+		&ChangeList{Type: Changed, Content: "- Item A\n- Item B\n"},
 	}
 
 	v := Version{Name: "1.0.0", Changes: changes}
@@ -146,9 +146,9 @@ func TestRenderChanges(t *testing.T) {
 }
 
 func TestVersionRender(t *testing.T) {
-	changes := []*Change{
-		&Change{Type: Added, Content: "- Item 1\n- Item 2\n"},
-		&Change{Type: Changed, Content: "- Item A\n- Item B\n"},
+	changes := []*ChangeList{
+		&ChangeList{Type: Added, Content: "- Item 1\n- Item 2\n"},
+		&ChangeList{Type: Changed, Content: "- Item A\n- Item B\n"},
 	}
 
 	v := Version{Name: "1.0.0", Changes: changes}

@@ -12,11 +12,11 @@ type Version struct {
 	Date    string // Date in the format YYYY-MM-DD
 	Link    string
 	Yanked  bool // True if the release was yanked/removed
-	Changes []*Change
+	Changes []*ChangeList
 }
 
 // Change returns the Change with name
-func (v *Version) Change(ct ChangeType) *Change {
+func (v *Version) Change(ct ChangeType) *ChangeList {
 	for _, c := range v.Changes {
 		if c.Type == ct {
 			return c

@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-// Change groups the changes by type
+// ChangeList groups the changes by type
 // Valid change types are "Added", "Changed", "Deprecated", "Fixed",
 // "Removed" and "Security"
-type Change struct {
+type ChangeList struct {
 	Type    ChangeType
 	Content string
 }
@@ -29,9 +29,9 @@ const (
 	Security
 )
 
-// NewChange creates a Change struct based on the informed type
-func NewChange(ct string) *Change {
-	change := &Change{}
+// NewChangeList creates a ChangeList struct based on the informed type
+func NewChangeList(ct string) *ChangeList {
+	change := &ChangeList{}
 	switch strings.ToLower(ct) {
 	case "added":
 		change.Type = Added
@@ -52,7 +52,7 @@ func NewChange(ct string) *Change {
 }
 
 // Render builds the representation of Change
-func (c *Change) Render(w io.Writer) {
+func (c *ChangeList) Render(w io.Writer) {
 	io.WriteString(w, fmt.Sprintf("### %s\n", c.Type))
 	io.WriteString(w, c.Content)
 }

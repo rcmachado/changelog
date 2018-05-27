@@ -137,7 +137,7 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 			if v := r.Changelog.Version(currentVersion); v != nil {
 				buf := r.children(node, entering)
 				title := string(buf.Bytes())
-				tmpChange := chg.NewChange(title)
+				tmpChange := chg.NewChangeList(title)
 				change := v.Change(tmpChange.Type)
 				if change == nil {
 					change = tmpChange
