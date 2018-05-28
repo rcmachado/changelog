@@ -19,7 +19,7 @@ $ make build
 
 ## Usage
 
-Normalize file format (see [Formatting][#formatting] for the specific
+Normalize file format (see [Formatting](#formatting) for the specific
 transformation applied):
 
 ```bash
