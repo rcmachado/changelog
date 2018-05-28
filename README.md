@@ -1,5 +1,7 @@
 # changelog
 
+[![CircleCI](https://circleci.com/gh/rcmachado/changelog.svg?style=svg)](https://circleci.com/gh/rcmachado/changelog)
+
 **Note: consider this beta software for now**
 
 `changelog` is a command-line application to read and manipulate
