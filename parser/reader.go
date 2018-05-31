@@ -36,20 +36,24 @@ func init() {
 
 // parseVersionHeading returns a filled Version object from the heading
 func parseVersionHeading(line string) *chg.Version {
-	submatches := reVersionLine.FindStringSubmatch(line)
-	totalMatches := len(submatches)
-	if totalMatches < 2 {
-		return nil
+	matches := reVersionLine.FindStringSubmatch(line)
+	groupNames := reVersionLine.SubexpNames()
+
+	mappedMatches := make(map[string]string)
+	for idx, group := range matches {
+		name := groupNames[idx]
+		if name != "" {
+			mappedMatches[name] = group
+		}
 	}
 
 	v := &chg.Version{}
-	v.Name = submatches[1]
-
-	if totalMatches > 2 {
-		v.Date = submatches[2]
-	}
-	if totalMatches > 3 && submatches[3] != "" {
+	v.Name = mappedMatches["name"]
+	v.Date = mappedMatches["date"]
+	if mappedMatches["yanked"] != "" {
 		v.Yanked = true
+	} else {
+		v.Yanked = false
 	}
 
 	return v
