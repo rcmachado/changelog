@@ -59,9 +59,9 @@ func TestNewChangeList(t *testing.T) {
 func TestChangeListRenderItems(t *testing.T) {
 	c := ChangeList{
 		Items: []*Item{
-			&Item{"Item 1"},
-			&Item{"Item 2"},
-			&Item{"Item 3"},
+			{"Item 1"},
+			{"Item 2"},
+			{"Item 3"},
 		},
 	}
 	expected := `- Item 1
@@ -82,7 +82,7 @@ func TestChangeRender(t *testing.T) {
 	c := ChangeList{
 		Type: Added,
 		Items: []*Item{
-			&Item{"something"},
+			{"something"},
 		},
 	}
 

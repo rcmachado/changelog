@@ -10,22 +10,22 @@ func TestSortChanges(t *testing.T) {
 	v := &Version{
 		Name: "1.0.0",
 		Changes: []*ChangeList{
-			&ChangeList{Type: Removed},
-			&ChangeList{Type: Added},
-			&ChangeList{Type: Fixed},
-			&ChangeList{Type: Changed},
-			&ChangeList{Type: Security},
-			&ChangeList{Type: Deprecated},
+			{Type: Removed},
+			{Type: Added},
+			{Type: Fixed},
+			{Type: Changed},
+			{Type: Security},
+			{Type: Deprecated},
 		},
 	}
 
 	expected := []*ChangeList{
-		&ChangeList{Type: Added},
-		&ChangeList{Type: Changed},
-		&ChangeList{Type: Deprecated},
-		&ChangeList{Type: Fixed},
-		&ChangeList{Type: Removed},
-		&ChangeList{Type: Security},
+		{Type: Added},
+		{Type: Changed},
+		{Type: Deprecated},
+		{Type: Fixed},
+		{Type: Removed},
+		{Type: Security},
 	}
 
 	v.SortChanges()
@@ -121,18 +121,18 @@ func TestRenderTitle(t *testing.T) {
 
 func TestRenderChanges(t *testing.T) {
 	changes := []*ChangeList{
-		&ChangeList{
+		{
 			Type: Added,
 			Items: []*Item{
-				&Item{"Item 1"},
-				&Item{"Item 2"},
+				{"Item 1"},
+				{"Item 2"},
 			},
 		},
-		&ChangeList{
+		{
 			Type: Changed,
 			Items: []*Item{
-				&Item{"Item A"},
-				&Item{"Item B"},
+				{"Item A"},
+				{"Item B"},
 			},
 		},
 	}
@@ -159,18 +159,18 @@ func TestRenderChanges(t *testing.T) {
 
 func TestVersionRender(t *testing.T) {
 	changes := []*ChangeList{
-		&ChangeList{
+		{
 			Type: Added,
 			Items: []*Item{
-				&Item{"Item 1"},
-				&Item{"Item 2"},
+				{"Item 1"},
+				{"Item 2"},
 			},
 		},
-		&ChangeList{
+		{
 			Type: Changed,
 			Items: []*Item{
-				&Item{"Item A"},
-				&Item{"Item B"},
+				{"Item A"},
+				{"Item B"},
 			},
 		},
 	}

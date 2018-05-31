@@ -73,8 +73,8 @@ func TestChangelogRender(t *testing.T) {
 
 	t.Run("with-versions", func(t *testing.T) {
 		c.Versions = []*Version{
-			&Version{Name: "1.0.0"},
-			&Version{Name: "2.0.0"},
+			{Name: "1.0.0"},
+			{Name: "2.0.0"},
 		}
 
 		expected := "# Changelog\n\nAny paragraph\nto be inserted.\n\n## 1.0.0\n\n## 2.0.0\n"
