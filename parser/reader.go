@@ -21,7 +21,6 @@ type Reader struct {
 	preambleBuf  bytes.Buffer
 }
 
-var reDate *regexp.Regexp
 var reVersionLine *regexp.Regexp
 
 // Points to the name of the current version being populated
@@ -33,7 +32,6 @@ var currentChangeType chg.ChangeType
 func init() {
 	// parses "version - date [yanked]" (only version is required)
 	reVersionLine = regexp.MustCompile(`(?i)\[?(?P<name>[0-9a-zA-Z\-\.]+)\]?(?: - (?P<date>[0-9a-z\-\.]+))?(?P<yanked> \[YANKED\])?`)
-	reDate = regexp.MustCompile(`\b\d{4}-\d{2}-\d{2}\b`)
 }
 
 // parseVersionHeading returns a filled Version object from the heading
