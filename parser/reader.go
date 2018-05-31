@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"regexp"
-	"strings"
 
 	"github.com/rcmachado/changelog/chg"
 
@@ -22,8 +21,8 @@ type Reader struct {
 	preambleBuf  bytes.Buffer
 }
 
-var reVersion *regexp.Regexp
 var reDate *regexp.Regexp
+var reVersionLine *regexp.Regexp
 
 // Points to the name of the current version being populated
 var currentVersion *chg.Version
@@ -32,9 +31,30 @@ var currentVersion *chg.Version
 var currentChangeType chg.ChangeType
 
 func init() {
-	// TODO: Make it parametrizable
-	reVersion = regexp.MustCompile(`(?i)\b(v?(\d+\.?)+\b|unreleased)`)
+	// parses "version - date [yanked]" (only version is required)
+	reVersionLine = regexp.MustCompile(`(?i)\[?(?P<name>[0-9a-zA-Z\-\.]+)\]?(?: - (?P<date>[0-9a-z\-\.]+))?(?P<yanked> \[YANKED\])?`)
 	reDate = regexp.MustCompile(`\b\d{4}-\d{2}-\d{2}\b`)
+}
+
+// parseVersionHeading returns a filled Version object from the heading
+func parseVersionHeading(line string) *chg.Version {
+	submatches := reVersionLine.FindStringSubmatch(line)
+	totalMatches := len(submatches)
+	if totalMatches < 2 {
+		return nil
+	}
+
+	v := &chg.Version{}
+	v.Name = submatches[1]
+
+	if totalMatches > 2 {
+		v.Date = submatches[2]
+	}
+	if totalMatches > 3 && submatches[3] != "" {
+		v.Yanked = true
+	}
+
+	return v
 }
 
 // Parse formats the input following the recommendation
@@ -107,21 +127,13 @@ func (r *Reader) Heading(w io.Writer, node *blackfriday.Node, entering bool) bla
 		// It's a version
 		if level == 2 {
 			r.isInPreamble = false
-			v := chg.Version{}
-			// we append it before because Link needs it
-			r.Changelog.Versions = append(r.Changelog.Versions, &v)
 
 			buf := r.children(node, entering)
 			line := string(buf.Bytes())
-			if version := reVersion.FindString(line); version != "" {
-				v.Name = version
-				if strings.HasSuffix(line, "[YANKED]") {
-					v.Yanked = true
-				}
-				if date := reDate.FindString(line); date != "" {
-					v.Date = date
-				}
-				currentVersion = &v
+			v := parseVersionHeading(line)
+			r.Changelog.Versions = append(r.Changelog.Versions, v)
+			if v != nil {
+				currentVersion = v
 				currentChangeType = 0
 			} else {
 				// now we remove it if don't needed
