@@ -29,7 +29,7 @@ var showCmd = &cobra.Command{
 		}
 
 		var buf bytes.Buffer
-		v.Render(&buf)
+		v.RenderChanges(&buf)
 		output := buf.Bytes()
 
 		fmt.Printf("%s", output)
