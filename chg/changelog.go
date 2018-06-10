@@ -1,6 +1,7 @@
 package chg
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strings"
@@ -36,11 +37,21 @@ func (c *Changelog) RenderLinks(w io.Writer) {
 
 // Render outputs the full changelog contents
 func (c *Changelog) Render(w io.Writer) {
-	io.WriteString(w, "# Changelog\n\n")
-	io.WriteString(w, c.Preamble)
+	io.WriteString(w, "# Changelog\n")
+	if preamble := strings.TrimSpace(c.Preamble); preamble != "" {
+		io.WriteString(w, "\n")
+		io.WriteString(w, preamble)
+		io.WriteString(w, "\n")
+	}
 	for _, v := range c.Versions {
 		io.WriteString(w, "\n")
 		v.Render(w)
 	}
-	c.RenderLinks(w)
+
+	var buf bytes.Buffer
+	c.RenderLinks(&buf)
+	if content := buf.Bytes(); content != nil {
+		io.WriteString(w, "\n")
+		w.Write(content)
+	}
 }
