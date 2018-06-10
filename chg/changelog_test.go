@@ -85,4 +85,29 @@ func TestChangelogRender(t *testing.T) {
 			t.Errorf("TestChangelogRender with versions fails, got =%s= expected =%s=", result, expected)
 		}
 	})
+
+	t.Run("sort-changes", func(t *testing.T) {
+		c.Versions = []*Version{
+			{
+				Name: "1.0.0",
+				Changes: []*ChangeList{
+					{
+						Type: Fixed,
+					},
+					{
+						Type: Added,
+					},
+				},
+			},
+		}
+
+		expected := "# Changelog\n\nAny paragraph\nto be inserted.\n\n## 1.0.0\n### Added\n\n### Fixed\n"
+		var buf bytes.Buffer
+		c.Render(&buf)
+		result := buf.String()
+		if result != expected {
+			t.Errorf("TestChangelogRender with sorted changes fails, got =%s= expected =%s=", result, expected)
+		}
+	})
+
 }

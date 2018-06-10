@@ -45,6 +45,7 @@ func (c *Changelog) Render(w io.Writer) {
 	}
 	for _, v := range c.Versions {
 		io.WriteString(w, "\n")
+		v.SortChanges()
 		v.Render(w)
 	}
 
