@@ -26,6 +26,26 @@ func (c *Changelog) Version(version string) *Version {
 	return nil
 }
 
+// Release transforms Unreleased into the version informed
+func (c *Changelog) Release(newVersion Version) *Version {
+	oldUnreleased := c.Version("Unreleased")
+	prevVersion := c.Versions[len(c.Versions)-1]
+
+	newUnreleased := Version{
+		Name: "Unreleased",
+		Link: strings.Replace(oldUnreleased.Link, prevVersion.Name, newVersion.Name, -1),
+	}
+
+	oldUnreleased.Link = strings.Replace(oldUnreleased.Link, "HEAD", newVersion.Name, -1)
+
+	oldUnreleased.Name = newVersion.Name
+	oldUnreleased.Date = newVersion.Date
+
+	c.Versions = append([]*Version{&newUnreleased}, c.Versions...)
+
+	return oldUnreleased
+}
+
 // RenderLinks will render the links for each version
 func (c *Changelog) RenderLinks(w io.Writer) {
 	for _, v := range c.Versions {

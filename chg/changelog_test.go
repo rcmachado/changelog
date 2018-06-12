@@ -3,6 +3,8 @@ package chg
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestChangelogVersion(t *testing.T) {
@@ -33,6 +35,35 @@ func TestChangelogVersion(t *testing.T) {
 			t.Error("Test comparing 'unknown' version failed")
 		}
 	})
+}
+
+func TestChangelogRelease(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "http://example.com/1.0.0..HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+			{
+				Name: "1.0.0",
+				Link: "http://example.com/abcdef..1.0.0",
+			},
+		},
+	}
+
+	newVersion := c.Release(Version{Name: "2.0.0"})
+
+	assert.Equal(t, "2.0.0", newVersion.Name)
+	// Make sure the changes were kept
+	assert.Equal(t, 1, len(newVersion.Changes))
 }
 
 func TestChangelogRenderLinks(t *testing.T) {
