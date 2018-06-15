@@ -13,6 +13,7 @@ import (
 const dateFormat = "2006-01-02"
 
 var releaseDate string
+var compareURL string
 
 var bumpCmd = &cobra.Command{
 	Use:   "bump",
@@ -31,6 +32,10 @@ var bumpCmd = &cobra.Command{
 			Date: releaseDate,
 		}
 
+		if compareURL != "" {
+			version.Link = compareURL
+		}
+
 		changelog := parser.Parse(input)
 		_, err = changelog.Release(version)
 		if err != nil {
@@ -45,5 +50,6 @@ var bumpCmd = &cobra.Command{
 func init() {
 	today := time.Now().Format(dateFormat)
 	bumpCmd.Flags().StringVarP(&releaseDate, "release-date", "d", today, "")
+	bumpCmd.Flags().StringVarP(&compareURL, "compare-url", "c", "", "Overwrite compare URL for Unreleased section")
 	rootCmd.AddCommand(bumpCmd)
 }

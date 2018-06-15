@@ -59,12 +59,26 @@ func TestChangelogRelease(t *testing.T) {
 		},
 	}
 
-	newVersion, err := c.Release(Version{Name: "2.0.0"})
+	t.Run("default", func(t *testing.T) {
+		newVersion, err := c.Release(Version{Name: "2.0.0"})
 
-	assert.Nil(t, err)
-	assert.Equal(t, "2.0.0", newVersion.Name)
-	// Make sure the changes were kept
-	assert.Equal(t, 1, len(newVersion.Changes))
+		assert.Nil(t, err)
+		assert.Equal(t, "2.0.0", newVersion.Name)
+		// Make sure the changes were kept
+		assert.Equal(t, 1, len(newVersion.Changes))
+	})
+
+	t.Run("explicit-compare-url", func(t *testing.T) {
+		v := Version{Name: "2.0.0", Link: "https://localhost/<prev>..<next>"}
+		newVersion, err := c.Release(v)
+
+		assert.Equal(t, "2.0.0", newVersion.Name)
+
+		unreleased := c.Version("Unreleased")
+		assert.Equal(t, "https://localhost/2.0.0..HEAD", unreleased.Link)
+
+		assert.Nil(t, err)
+	})
 }
 
 func TestChangelogRenderLinks(t *testing.T) {
