@@ -14,6 +14,12 @@ type Changelog struct {
 	Versions []*Version
 }
 
+// NewChangelog creates the changelog struct
+func NewChangelog() *Changelog {
+	c := Changelog{}
+	return &c
+}
+
 // Version finds and returns the version `v`
 // The search is case-insensitive
 func (c *Changelog) Version(version string) *Version {

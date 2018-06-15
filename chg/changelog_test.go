@@ -11,7 +11,7 @@ func TestChangelogVersion(t *testing.T) {
 	unreleased := &Version{Name: "Unreleased"}
 	v123 := &Version{Name: "1.2.3"}
 
-	c := Changelog{}
+	c := NewChangelog()
 	c.Versions = append(c.Versions, unreleased)
 	c.Versions = append(c.Versions, v123)
 
@@ -71,7 +71,7 @@ func TestChangelogRenderLinks(t *testing.T) {
 	v123 := &Version{Name: "1.2.3", Link: "http://example.com/1.2.3"}
 	v456 := &Version{Name: "4.5.6"}
 
-	c := Changelog{}
+	c := NewChangelog()
 	c.Versions = append(c.Versions, unreleased)
 	c.Versions = append(c.Versions, v123)
 	c.Versions = append(c.Versions, v456)
