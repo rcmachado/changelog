@@ -33,23 +33,30 @@ func (c *Changelog) Version(version string) *Version {
 }
 
 // Release transforms Unreleased into the version informed
-func (c *Changelog) Release(newVersion Version) *Version {
+func (c *Changelog) Release(newVersion Version) (*Version, error) {
 	oldUnreleased := c.Version("Unreleased")
 	prevVersion := c.Versions[len(c.Versions)-1]
 
 	newUnreleased := Version{
 		Name: "Unreleased",
-		Link: strings.Replace(oldUnreleased.Link, prevVersion.Name, newVersion.Name, -1),
+	}
+
+	if newVersion.Link != "" {
+		newUnreleased.Link = strings.Replace(oldUnreleased.Link, prevVersion.Name, newVersion.Name, -1)
+	} else {
+		if prevVersion == oldUnreleased {
+			// we don't have a previous version
+			return nil, fmt.Errorf("Could not infer the compare link")
+		}
 	}
 
 	oldUnreleased.Link = strings.Replace(oldUnreleased.Link, "HEAD", newVersion.Name, -1)
-
 	oldUnreleased.Name = newVersion.Name
 	oldUnreleased.Date = newVersion.Date
 
 	c.Versions = append([]*Version{&newUnreleased}, c.Versions...)
 
-	return oldUnreleased
+	return oldUnreleased, nil
 }
 
 // RenderLinks will render the links for each version

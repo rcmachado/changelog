@@ -32,7 +32,12 @@ var bumpCmd = &cobra.Command{
 		}
 
 		changelog := parser.Parse(input)
-		changelog.Release(version)
+		_, err = changelog.Release(version)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to bump version to %s: %s\n", args[0], err)
+			os.Exit(3)
+		}
+
 		changelog.Render(os.Stdout)
 	},
 }

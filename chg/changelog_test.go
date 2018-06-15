@@ -59,8 +59,9 @@ func TestChangelogRelease(t *testing.T) {
 		},
 	}
 
-	newVersion := c.Release(Version{Name: "2.0.0"})
+	newVersion, err := c.Release(Version{Name: "2.0.0"})
 
+	assert.Nil(t, err)
 	assert.Equal(t, "2.0.0", newVersion.Name)
 	// Make sure the changes were kept
 	assert.Equal(t, 1, len(newVersion.Changes))
