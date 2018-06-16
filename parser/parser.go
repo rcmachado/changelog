@@ -23,7 +23,7 @@ func Parse(input []byte) *chg.Changelog {
 
 func newRenderer() renderer {
 	r := renderer{}
-	r.changelog = &chg.Changelog{}
+	r.changelog = chg.NewChangelog()
 	r.reVersion = regexp.MustCompile(`(?i)\[?(?P<name>[0-9a-zA-Z\-\.]+)\]?(?: - (?P<date>[0-9a-z\-\.]+))?(?P<yanked> \[YANKED\])?`)
 	return r
 }

@@ -14,6 +14,12 @@ type Changelog struct {
 	Versions []*Version
 }
 
+// NewChangelog creates the changelog struct
+func NewChangelog() *Changelog {
+	c := Changelog{}
+	return &c
+}
+
 // Version finds and returns the version `v`
 // The search is case-insensitive
 func (c *Changelog) Version(version string) *Version {
@@ -24,6 +30,39 @@ func (c *Changelog) Version(version string) *Version {
 	}
 
 	return nil
+}
+
+// Release transforms Unreleased into the version informed
+func (c *Changelog) Release(newVersion Version) (*Version, error) {
+	oldUnreleased := c.Version("Unreleased")
+	prevVersion := c.Versions[1]
+
+	newUnreleased := Version{
+		Name: "Unreleased",
+	}
+
+	if prevVersion == oldUnreleased && newVersion.Link == "" {
+		// we don't have a previous version
+		return nil, fmt.Errorf("Could not infer the compare link")
+	}
+
+	var compareURL string
+	if newVersion.Link != "" {
+		compareURL = strings.Replace(newVersion.Link, "<prev>", newVersion.Name, -1)
+		compareURL = strings.Replace(compareURL, "<next>", "HEAD", -1)
+	} else {
+		compareURL = strings.Replace(oldUnreleased.Link, prevVersion.Name, newVersion.Name, -1)
+	}
+
+	newUnreleased.Link = compareURL
+
+	oldUnreleased.Link = strings.Replace(oldUnreleased.Link, "HEAD", newVersion.Name, -1)
+	oldUnreleased.Name = newVersion.Name
+	oldUnreleased.Date = newVersion.Date
+
+	c.Versions = append([]*Version{&newUnreleased}, c.Versions...)
+
+	return oldUnreleased, nil
 }
 
 // RenderLinks will render the links for each version
