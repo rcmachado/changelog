@@ -27,7 +27,7 @@ func TestChangelogVersion(t *testing.T) {
 
 	t.Run("version=unknown", func(t *testing.T) {
 		result := c.Version("unknown")
-		assert.NotNil(t, result)
+		assert.Nil(t, result)
 	})
 }
 

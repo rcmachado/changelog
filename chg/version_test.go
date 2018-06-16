@@ -2,8 +2,9 @@ package chg
 
 import (
 	"bytes"
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSortChanges(t *testing.T) {
@@ -30,9 +31,7 @@ func TestSortChanges(t *testing.T) {
 
 	v.SortChanges()
 
-	if !reflect.DeepEqual(v.Changes, expected) {
-		t.Error("SortChanges should sort Changes properly")
-	}
+	assert.Equal(t, expected, v.Changes)
 }
 
 func TestChange(t *testing.T) {
@@ -49,16 +48,12 @@ func TestChange(t *testing.T) {
 
 	t.Run("change-exists", func(t *testing.T) {
 		result := v.Change(Added)
-		if result != added {
-			t.Errorf("Search for change, expected %s got %s", Added, result)
-		}
+		assert.Equal(t, added, result)
 	})
 
 	t.Run("change-does-not-exist", func(t *testing.T) {
 		result := v.Change(Security)
-		if result != nil {
-			t.Errorf("Search for unknown change, expected nil got %s", result)
-		}
+		assert.Nil(t, result)
 	})
 }
 
@@ -71,9 +66,7 @@ func TestRenderTitle(t *testing.T) {
 		var buf bytes.Buffer
 		v.RenderTitle(&buf)
 		result := string(buf.Bytes())
-		if expected != result {
-			t.Errorf("RenderTitle should render version only, expected %s, got %s", expected, result)
-		}
+		assert.Equal(t, expected, result)
 	})
 
 	t.Run("date", func(t *testing.T) {
@@ -85,9 +78,7 @@ func TestRenderTitle(t *testing.T) {
 		var buf bytes.Buffer
 		v.RenderTitle(&buf)
 		result := string(buf.Bytes())
-		if expected != result {
-			t.Errorf("RenderTitle should render the date, expected %s, got %s", expected, result)
-		}
+		assert.Equal(t, expected, result)
 	})
 
 	t.Run("link", func(t *testing.T) {
@@ -99,9 +90,7 @@ func TestRenderTitle(t *testing.T) {
 		var buf bytes.Buffer
 		v.RenderTitle(&buf)
 		result := string(buf.Bytes())
-		if expected != result {
-			t.Errorf("RenderTitle should render link, expected %s, got %s", expected, result)
-		}
+		assert.Equal(t, expected, result)
 	})
 
 	t.Run("yanked", func(t *testing.T) {
@@ -113,9 +102,7 @@ func TestRenderTitle(t *testing.T) {
 		var buf bytes.Buffer
 		v.RenderTitle(&buf)
 		result := string(buf.Bytes())
-		if expected != result {
-			t.Errorf("RenderTitle should render yanked versions, expected %s, got %s", expected, result)
-		}
+		assert.Equal(t, expected, result)
 	})
 }
 
@@ -152,9 +139,7 @@ func TestRenderChanges(t *testing.T) {
 	v.RenderChanges(&buf)
 	result := string(buf.Bytes())
 
-	if result != expected {
-		t.Errorf("RenderChanges fail, expected %s got %s", expected, result)
-	}
+	assert.Equal(t, expected, result)
 }
 
 func TestVersionRender(t *testing.T) {
@@ -191,7 +176,5 @@ func TestVersionRender(t *testing.T) {
 	v.Render(&buf)
 	result := string(buf.Bytes())
 
-	if result != expected {
-		t.Errorf("RenderChanges fail, expected %s got %s", expected, result)
-	}
+	assert.Equal(t, expected, result)
 }
