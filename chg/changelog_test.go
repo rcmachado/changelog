@@ -17,23 +17,17 @@ func TestChangelogVersion(t *testing.T) {
 
 	t.Run("version=unreleased", func(t *testing.T) {
 		result := c.Version("unreleased")
-		if result != unreleased {
-			t.Error("Test comparing 'unreleased' version failed")
-		}
+		assert.Equal(t, unreleased, result)
 	})
 
 	t.Run("version=1.2.3", func(t *testing.T) {
 		result := c.Version("1.2.3")
-		if result != v123 {
-			t.Error("Test comparing '1.2.3' version failed")
-		}
+		assert.Equal(t, v123, result)
 	})
 
 	t.Run("version=unknown", func(t *testing.T) {
 		result := c.Version("unknown")
-		if result != nil {
-			t.Error("Test comparing 'unknown' version failed")
-		}
+		assert.NotNil(t, result)
 	})
 }
 
@@ -101,9 +95,7 @@ func TestChangelogRenderLinks(t *testing.T) {
 	c.RenderLinks(&buf)
 	result := string(buf.Bytes())
 
-	if result != expected {
-		t.Errorf("TestChangelogRenderLinks fail, expecting %s found %s", expected, result)
-	}
+	assert.Equal(t, expected, result)
 }
 
 func TestChangelogRender(t *testing.T) {
@@ -116,9 +108,7 @@ func TestChangelogRender(t *testing.T) {
 		var buf bytes.Buffer
 		c.Render(&buf)
 		result := buf.String()
-		if result != expected {
-			t.Errorf("TestChangelogRender with empty versions fails, got %s expected %s", result, expected)
-		}
+		assert.Equal(t, expected, result)
 	})
 
 	t.Run("with-versions", func(t *testing.T) {
@@ -131,9 +121,7 @@ func TestChangelogRender(t *testing.T) {
 		var buf bytes.Buffer
 		c.Render(&buf)
 		result := buf.String()
-		if result != expected {
-			t.Errorf("TestChangelogRender with versions fails, got =%s= expected =%s=", result, expected)
-		}
+		assert.Equal(t, expected, result)
 	})
 
 	t.Run("sort-changes", func(t *testing.T) {
@@ -155,9 +143,6 @@ func TestChangelogRender(t *testing.T) {
 		var buf bytes.Buffer
 		c.Render(&buf)
 		result := buf.String()
-		if result != expected {
-			t.Errorf("TestChangelogRender with sorted changes fails, got =%s= expected =%s=", result, expected)
-		}
+		assert.Equal(t, expected, result)
 	})
-
 }
