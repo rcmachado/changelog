@@ -2,53 +2,33 @@ package chg
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewChangeList(t *testing.T) {
-	t.Run("type=added", func(t *testing.T) {
-		result := NewChangeList("Added")
+	var testData = []struct {
+		input    string
+		expected ChangeType
+	}{
+		{input: "Added", expected: Added},
+		{input: "Changed", expected: Changed},
+		{input: "Deprecated", expected: Deprecated},
+		{input: "Fixed", expected: Fixed},
+		{input: "Removed", expected: Removed},
+		{input: "Security", expected: Security},
+	}
 
-		assert.NotNil(t, result)
-		assert.Equal(t, Added, result.Type)
-	})
+	for _, tt := range testData {
+		t.Run(fmt.Sprintf("type=%s", tt.input), func(t *testing.T) {
+			result := NewChangeList(tt.input)
 
-	t.Run("type=changed", func(t *testing.T) {
-		result := NewChangeList("Changed")
-
-		assert.NotNil(t, result)
-		assert.Equal(t, Changed, result.Type)
-	})
-
-	t.Run("type=deprecated", func(t *testing.T) {
-		result := NewChangeList("Deprecated")
-
-		assert.NotNil(t, result)
-		assert.Equal(t, Deprecated, result.Type)
-	})
-
-	t.Run("type=fixed", func(t *testing.T) {
-		result := NewChangeList("Fixed")
-
-		assert.NotNil(t, result)
-		assert.Equal(t, Fixed, result.Type)
-	})
-
-	t.Run("type=removed", func(t *testing.T) {
-		result := NewChangeList("Removed")
-
-		assert.NotNil(t, result)
-		assert.Equal(t, Removed, result.Type)
-	})
-
-	t.Run("type=security", func(t *testing.T) {
-		result := NewChangeList("Security")
-
-		assert.NotNil(t, result)
-		assert.Equal(t, Security, result.Type)
-	})
+			assert.NotNil(t, result)
+			assert.Equal(t, tt.expected, result.Type)
+		})
+	}
 
 	t.Run("type=unknown", func(t *testing.T) {
 		result := NewChangeList("unknown")
