@@ -56,6 +56,10 @@ func TestChangelogRelease(t *testing.T) {
 				Name: "1.0.0",
 				Link: "http://example.com/abcdef..1.0.0",
 			},
+			{
+				Name: "0.2.0",
+				Link: "http://example.com/abcdef..0.2.0",
+			},
 		},
 	}
 

@@ -35,7 +35,7 @@ func (c *Changelog) Version(version string) *Version {
 // Release transforms Unreleased into the version informed
 func (c *Changelog) Release(newVersion Version) (*Version, error) {
 	oldUnreleased := c.Version("Unreleased")
-	prevVersion := c.Versions[len(c.Versions)-1]
+	prevVersion := c.Versions[1]
 
 	newUnreleased := Version{
 		Name: "Unreleased",
