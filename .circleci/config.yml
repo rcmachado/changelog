@@ -34,7 +34,7 @@ jobs:
             curl --location -o goreleaser.tar.gz https://github.com/goreleaser/goreleaser/releases/download/v0.77.2/goreleaser_Linux_x86_64.tar.gz
             tar xzf goreleaser.tar.gz goreleaser
             [[ "$CIRCLE_TAG" == "" ]] && OPTS="--snapshot"
-            ./goreleaser "$OPTS"
+            ./goreleaser $OPTS
       - store_artifacts:
           path: dist
           destination: builds
