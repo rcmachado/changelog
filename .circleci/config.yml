@@ -43,10 +43,13 @@ workflows:
   version: 2
   build:
     jobs:
-      - tests
+      - tests:
+          filters:
+            tags:
+              only: /^\d+\.\d+\.\d+$/
       - release:
           requires:
             - tests
           filters:
             tags:
-              only: /\d+\.\d+\.\d+/
+              only: /^\d+\.\d+\.\d+$/
