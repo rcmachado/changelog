@@ -3,6 +3,8 @@ package chg
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestItemRender(t *testing.T) {
@@ -13,7 +15,5 @@ func TestItemRender(t *testing.T) {
 	i.Render(&buf)
 	result := buf.String()
 
-	if result != expected {
-		t.Errorf("Item.Render failed, expected %s got %s", expected, result)
-	}
+	assert.Equal(t, expected, result)
 }
