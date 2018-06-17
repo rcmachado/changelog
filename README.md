@@ -1,6 +1,7 @@
 # changelog
 
 [![CircleCI](https://circleci.com/gh/rcmachado/changelog.svg?style=svg)](https://circleci.com/gh/rcmachado/changelog)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rcmachado/changelog)](https://goreportcard.com/report/github.com/rcmachado/changelog)
 
 **Note: consider this beta software for now**
 
