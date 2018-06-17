@@ -100,11 +100,17 @@ func TestChangelogRenderLinks(t *testing.T) {
 
 func TestChangelogRender(t *testing.T) {
 	c := Changelog{
-		Preamble: "Any paragraph\nto be inserted.\n",
+		Preamble: `Any paragraph
+to be inserted.
+`,
 	}
 
 	t.Run("empty-versions", func(t *testing.T) {
-		expected := "# Changelog\n\nAny paragraph\nto be inserted.\n"
+		expected := `# Changelog
+
+Any paragraph
+to be inserted.
+`
 		var buf bytes.Buffer
 		c.Render(&buf)
 		result := buf.String()
@@ -117,7 +123,15 @@ func TestChangelogRender(t *testing.T) {
 			{Name: "2.0.0"},
 		}
 
-		expected := "# Changelog\n\nAny paragraph\nto be inserted.\n\n## 1.0.0\n\n## 2.0.0\n"
+		expected := `# Changelog
+
+Any paragraph
+to be inserted.
+
+## 1.0.0
+
+## 2.0.0
+`
 		var buf bytes.Buffer
 		c.Render(&buf)
 		result := buf.String()
@@ -139,7 +153,17 @@ func TestChangelogRender(t *testing.T) {
 			},
 		}
 
-		expected := "# Changelog\n\nAny paragraph\nto be inserted.\n\n## 1.0.0\n### Added\n\n### Fixed\n"
+		expected := `# Changelog
+
+Any paragraph
+to be inserted.
+
+## 1.0.0
+### Added
+
+### Fixed
+`
+
 		var buf bytes.Buffer
 		c.Render(&buf)
 		result := buf.String()
