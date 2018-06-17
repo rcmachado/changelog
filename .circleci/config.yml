@@ -45,6 +45,8 @@ workflows:
     jobs:
       - tests
       - release:
+          requires:
+            - tests
           filters:
             tags:
               only: /\d+\.\d+\.\d+/
