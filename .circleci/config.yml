@@ -29,7 +29,11 @@ jobs:
     steps:
       - checkout
       - run: go get -v -t -d ./...
-      - run: go build
+      - run:
+          command: |
+            curl --location -o goreleaser.tar.gz https://github.com/goreleaser/goreleaser/releases/download/v0.77.2/goreleaser_Linux_x86_64.tar.gz
+            tar xzf goreleaser.tar.gz goreleaser
+            ./goreleaser --snapshot
 
 workflows:
   version: 2
