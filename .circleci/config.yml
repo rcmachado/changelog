@@ -32,7 +32,8 @@ jobs:
       - run:
           command: |
             [[ "$CIRCLE_TAG" == "" ]] && OPTS="--snapshot"
-            curl -sL https://git.io/goreleaser | bash -s $OPTS
+            curl -o /tmp/goreleaser -sL https://git.io/goreleaser
+            bash /tmp/goreleaser $OPTS
       - store_artifacts:
           path: dist
           destination: builds
