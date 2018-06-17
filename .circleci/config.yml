@@ -1,6 +1,7 @@
 version: 2
+
 jobs:
-  build:
+  tests:
     docker:
       - image: circleci/golang:1.10
     working_directory: /go/src/github.com/rcmachado/changelog
@@ -20,3 +21,19 @@ jobs:
           destination: raw-test-output
       - store_test_results:
           path: /tmp/test-results
+
+  release:
+    docker:
+      - image: circleci/golang:1.10
+    working_directory: /go/src/github.com/rcmachado/changelog
+    steps:
+      - checkout
+      - run: go get -v -t -d ./...
+      - run: go build
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - tests
+      - release
