@@ -60,6 +60,6 @@ func (c *ChangeList) RenderItems(w io.Writer) {
 
 // Render builds the representation of Change
 func (c *ChangeList) Render(w io.Writer) {
-	io.WriteString(w, fmt.Sprintf("### %s\n", c.Type))
+	io.WriteString(w, fmt.Sprintf("### %s\n", c.Type.String()))
 	c.RenderItems(w)
 }
