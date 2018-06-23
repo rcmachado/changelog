@@ -160,9 +160,9 @@ func TestVersionRender(t *testing.T) {
 		},
 	}
 
-	v := Version{Name: "1.0.0", Changes: changes}
+	v := Version{Name: "1.0.0", Yanked: true, Changes: changes}
 
-	expected := `## 1.0.0
+	expected := `## 1.0.0 [YANKED]
 ### Added
 - Item 1
 - Item 2

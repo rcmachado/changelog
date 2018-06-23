@@ -45,9 +45,10 @@ func TestParserParse(t *testing.T) {
 					},
 				},
 				{
-					Name: "1.0.0",
-					Date: "2018-04-23",
-					Link: "http://example.com/abcdef..1.0.0",
+					Name:   "1.0.0",
+					Date:   "2018-04-23",
+					Link:   "http://example.com/abcdef..1.0.0",
+					Yanked: true,
 					Changes: []*chg.ChangeList{
 						{
 							Type: chg.Security,

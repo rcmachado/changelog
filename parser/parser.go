@@ -129,6 +129,9 @@ func (r *renderer) Heading(w io.Writer, node *blackfriday.Node, entering bool) b
 
 		r.currentVersion.Name = metadata["name"]
 		r.currentVersion.Date = metadata["date"]
+		if metadata["yanked"] != "" {
+			r.currentVersion.Yanked = true
+		}
 		r.changelog.Versions = append(r.changelog.Versions, r.currentVersion)
 
 		return blackfriday.SkipChildren

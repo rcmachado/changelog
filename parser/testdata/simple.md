@@ -9,7 +9,7 @@ Simple paragraph.
 ### Fixed
 - That annoying bug
 
-## [1.0.0] - 2018-04-23
+## [1.0.0] - 2018-04-23 [YANKED]
 ### Security
 - Remote code execution using our eval endpoint
 
