@@ -132,7 +132,7 @@ func (r *renderer) Heading(w io.Writer, node *blackfriday.Node, entering bool) b
 		r.changelog.Versions = append(r.changelog.Versions, r.currentVersion)
 
 		return blackfriday.SkipChildren
-	case 3: // It's a change
+	case 3, 4: // It's a change
 		var buf bytes.Buffer
 		r.renderInline(&buf, node, entering)
 

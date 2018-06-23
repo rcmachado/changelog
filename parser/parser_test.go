@@ -117,4 +117,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 		assert.Equal(t, unreleasedVersion, result.Versions[0])
 		assert.Equal(t, zerozerooneVersion, result.Versions[len(result.Versions)-1])
 	})
+
+	t.Run("malformed", func(t *testing.T) {
+		input := readFile(t, "malformed")
+
+		expected := &chg.Changelog{
+			Preamble: "Simple paragraph.",
+			Versions: []*chg.Version{
+				{
+					Name: "Unreleased",
+					Link: "http://example.com/1.0.0..HEAD",
+					Changes: []*chg.ChangeList{
+						{
+							Type: chg.Added,
+							Items: []*chg.Item{
+								{"Awesome feature that people always asked for"},
+							},
+						},
+						{
+							Type: chg.Fixed,
+							Items: []*chg.Item{
+								{"That annoying bug"},
+							},
+						},
+					},
+				},
+				{
+					Name: "1.0.0",
+					Date: "2018-04-23",
+					Link: "http://example.com/abcdef..1.0.0",
+					Changes: []*chg.ChangeList{
+						{
+							Type: chg.Security,
+							Items: []*chg.Item{
+								{"Remote code execution using our eval endpoint"},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		result := parser.Parse(input)
+		assert.Equal(t, expected, result)
+	})
 }
