@@ -162,4 +162,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 		result := parser.Parse(input)
 		assert.Equal(t, expected, result)
 	})
+
+	t.Run("duplicated", func(t *testing.T) {
+		input := readFile(t, "duplicated")
+
+		expected := &chg.Changelog{
+			Preamble: "Simple paragraph.",
+			Versions: []*chg.Version{
+				{
+					Name: "Unreleased",
+					Link: "http://example.com/abcdef..HEAD",
+					Changes: []*chg.ChangeList{
+						{
+							Type: chg.Added,
+							Items: []*chg.Item{
+								{"Item 1"},
+								{"Item 2"},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		result := parser.Parse(input)
+		assert.Equal(t, expected, result)
+	})
 }
