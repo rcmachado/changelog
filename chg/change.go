@@ -21,7 +21,8 @@ type ChangeType int
 
 // Change types
 const (
-	Added ChangeType = iota
+	Unknown ChangeType = iota
+	Added
 	Changed
 	Deprecated
 	Fixed

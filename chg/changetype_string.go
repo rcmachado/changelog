@@ -4,9 +4,9 @@ package chg
 
 import "strconv"
 
-const _ChangeType_name = "AddedChangedDeprecatedFixedRemovedSecurity"
+const _ChangeType_name = "UnknownAddedChangedDeprecatedFixedRemovedSecurity"
 
-var _ChangeType_index = [...]uint8{0, 5, 12, 22, 27, 34, 42}
+var _ChangeType_index = [...]uint8{0, 7, 12, 19, 29, 34, 41, 49}
 
 func (i ChangeType) String() string {
 	if i < 0 || i >= ChangeType(len(_ChangeType_index)-1) {
