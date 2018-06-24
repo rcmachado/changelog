@@ -138,9 +138,18 @@ func (r *renderer) Heading(w io.Writer, node *blackfriday.Node, entering bool) b
 	case 3, 4: // It's a change
 		var buf bytes.Buffer
 		r.renderInline(&buf, node, entering)
+		changeName := buf.String()
 
-		r.currentChange = chg.NewChangeList(buf.String())
-		r.currentVersion.Changes = append(r.currentVersion.Changes, r.currentChange)
+		changeType := chg.ChangeTypeFromString(changeName)
+		if changeType != chg.Unknown {
+			r.currentChange = r.currentVersion.Change(changeType)
+			if r.currentChange == nil {
+				r.currentChange = chg.NewChangeList(changeName)
+				r.currentVersion.Changes = append(r.currentVersion.Changes, r.currentChange)
+			}
+		} else {
+			r.currentChange = nil
+		}
 
 		return blackfriday.SkipChildren
 	}

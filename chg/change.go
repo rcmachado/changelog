@@ -21,7 +21,8 @@ type ChangeType int
 
 // Change types
 const (
-	Added ChangeType = iota
+	Unknown ChangeType = iota
+	Added
 	Changed
 	Deprecated
 	Fixed
@@ -29,26 +30,33 @@ const (
 	Security
 )
 
-// NewChangeList creates a ChangeList struct based on the informed type
-func NewChangeList(ct string) *ChangeList {
-	change := &ChangeList{}
+// ChangeTypeFromString creates a type based on its string name
+func ChangeTypeFromString(ct string) ChangeType {
 	switch strings.ToLower(ct) {
 	case "added":
-		change.Type = Added
+		return Added
 	case "changed":
-		change.Type = Changed
+		return Changed
 	case "deprecated":
-		change.Type = Deprecated
+		return Deprecated
 	case "fixed":
-		change.Type = Fixed
+		return Fixed
 	case "removed":
-		change.Type = Removed
+		return Removed
 	case "security":
-		change.Type = Security
+		return Security
 	default:
+		return Unknown
+	}
+}
+
+// NewChangeList creates a ChangeList struct based on the informed type
+func NewChangeList(ct string) *ChangeList {
+	changeType := ChangeTypeFromString(ct)
+	if changeType == Unknown {
 		return nil
 	}
-	return change
+	return &ChangeList{Type: changeType}
 }
 
 // RenderItems renders all the items
