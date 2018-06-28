@@ -24,13 +24,15 @@ func init() {
 	flags.StringVarP(&filename, "filename", "f", "CHANGELOG.md", "Changelog file (use '-' for stdin)")
 }
 
-func readChangelog(name string) ([]byte, error) {
+func readChangelog() []byte {
+	name := filename
 	if name == "-" {
 		content, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {
-			return nil, err
+			fmt.Fprintf(os.Stderr, "%s", err)
+			os.Exit(2)
 		}
-		return content, nil
+		return content
 	}
 
 	var prefixDir string
@@ -41,13 +43,15 @@ func readChangelog(name string) ([]byte, error) {
 	}
 	filename, err := filepath.Abs(prefixDir + name)
 	if err != nil {
-		return nil, err
+		fmt.Fprintf(os.Stderr, "%s", err)
+		os.Exit(2)
 	}
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		fmt.Fprintf(os.Stderr, "%s", err)
+		os.Exit(2)
 	}
-	return content, nil
+	return content
 }
 
 // Execute the program with command-line args

@@ -21,11 +21,7 @@ var bumpCmd = &cobra.Command{
 	Long:  "Change current Unreleased version into the new version",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		input, err := readChangelog(filename)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(2)
-		}
+		input := readChangelog()
 
 		version := chg.Version{
 			Name: args[0],
@@ -37,7 +33,7 @@ var bumpCmd = &cobra.Command{
 		}
 
 		changelog := parser.Parse(input)
-		_, err = changelog.Release(version)
+		_, err := changelog.Release(version)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to bump version to %s: %s\n", args[0], err)
 			os.Exit(3)
