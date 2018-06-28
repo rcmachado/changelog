@@ -28,7 +28,7 @@ var showCmd = &cobra.Command{
 		v.RenderChanges(&buf)
 		output := buf.Bytes()
 
-		fmt.Printf("%s", output)
+		writeChangelog(output)
 	},
 }
 

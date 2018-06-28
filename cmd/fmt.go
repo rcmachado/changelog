@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/rcmachado/changelog/parser"
 	"github.com/spf13/cobra"
@@ -21,7 +20,7 @@ var fmtCmd = &cobra.Command{
 		chg.Render(&buf)
 		output := buf.Bytes()
 
-		fmt.Printf("%s", output)
+		writeChangelog(output)
 	},
 }
 

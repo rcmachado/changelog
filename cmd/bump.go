@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"time"
@@ -39,7 +40,11 @@ var bumpCmd = &cobra.Command{
 			os.Exit(3)
 		}
 
-		changelog.Render(os.Stdout)
+		var buf bytes.Buffer
+		changelog.Render(&buf)
+		output := buf.Bytes()
+
+		writeChangelog(output)
 	},
 }
 
