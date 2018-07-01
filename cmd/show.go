@@ -14,11 +14,7 @@ var showCmd = &cobra.Command{
 	Short: "Show information about version",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		input, err := readChangelog(filename)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(2)
-		}
+		input := readChangelog()
 
 		chg := parser.Parse(input)
 
@@ -32,7 +28,7 @@ var showCmd = &cobra.Command{
 		v.RenderChanges(&buf)
 		output := buf.Bytes()
 
-		fmt.Printf("%s", output)
+		writeChangelog(output)
 	},
 }
 
