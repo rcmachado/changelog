@@ -6,6 +6,9 @@
 `changelog` is a command-line application to read and manipulate
 `CHANGELOG.md` files that follows the [keepachangelog.com][] spec.
 
+It can normalize the file (`fmt`), create a release (`release`) and
+show a specific version (`show`). See [Usage](#usage) for details.
+
 ## Installation
 
 ### Linux and macOS
@@ -44,6 +47,12 @@ Show the change log for a specific version:
 
 ```bash
 $ changelog show 1.2.3
+```
+
+Create a new release:
+
+```bash
+$ changelog release 1.2.4
 ```
 
 ### Formatting
