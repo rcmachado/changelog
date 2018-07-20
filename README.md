@@ -62,7 +62,7 @@ the same output, no matter how messy the file is. Right now it doesn't
 do much, but the plan is to evolve it as a kind of `go fmt` for
 changelogs.
 
-The transformations applied are:
+Currently, the following transformations are applied:
 
 - Sections are sorted (eg. Added, Changed, etc)
 - Version links are put at the bottom of the file
