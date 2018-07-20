@@ -9,3 +9,6 @@ build: deps
 
 test:
 	go test ./...
+
+release: build
+	./changelog release $(V) -o CHANGELOG.md
