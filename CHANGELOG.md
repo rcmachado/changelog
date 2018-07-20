@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - `bump` command renamed to `release`
+- Use `dep` to handle dependencies
 
 ### Fixed
 - Merge duplicated sections when parsing changelog file
