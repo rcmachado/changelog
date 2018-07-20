@@ -36,7 +36,7 @@ jobs:
       - attach_workspace:
           at: /go/src/github.com/rcmachado/changelog
       - run: go get -v -t -d ./...
-      - run: make build
+      - run: go build -o changelog main.go
       - run:
           command: |
             [[ "$CIRCLE_TAG" == "" ]] && OPTS="--snapshot"
