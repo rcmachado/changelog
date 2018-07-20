@@ -8,6 +8,15 @@
 
 ## Installation
 
+### Linux and macOS
+
+The easiest way to install it is to download the [latest version][]
+from GitHub releases.
+
+There are precompiled binaries for macOS and Linux.
+
+### From source
+
 Download and build the executable:
 
 ```bash
@@ -70,3 +79,4 @@ It's released under MIT license. See [LICENSE][] file for details.
 [keepachangelog.com]: https://keepachangelog.com/
 [LICENSE]: ./LICENSE
 [fill an issue]: https://github.com/rcmachado/changelog/issues
+[latest version]: https://github.com/rcmachado/changelog/releases/latest
