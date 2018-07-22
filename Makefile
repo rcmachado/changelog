@@ -8,7 +8,7 @@ build: deps
 	go build -o changelog main.go
 
 test:
-	go test ./...
+	go test -cover ./...
 
 release: build
 	./changelog release $(V) -o CHANGELOG.md

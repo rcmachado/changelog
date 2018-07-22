@@ -13,10 +13,12 @@ jobs:
       - run: go get -u github.com/golang/dep/cmd/dep
       - run: dep ensure -vendor-only
       - run: go get -u github.com/jstemmer/go-junit-report
+      - run: go get -u github.com/mattn/goveralls
       - run:
           command: |
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
-            go test -v ./... | tee ${TEST_RESULTS}/go-test.out
+            go test -cover -race -coverprofile=${TEST_RESULTS}/coverage.out -v ./... | tee ${TEST_RESULTS}/go-test.out
+      - run: goveralls -coverprofile=${TEST_RESULTS}/coverage.out -service=circle-ci -repotoken="${COVERALLS_TOKEN}"
       - store_artifacts:
           path: /tmp/test-results
           destination: raw-test-output

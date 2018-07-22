@@ -1,6 +1,7 @@
 # changelog
 
 [![CircleCI](https://circleci.com/gh/rcmachado/changelog.svg?style=svg)](https://circleci.com/gh/rcmachado/changelog)
+[![Coverage Status](https://coveralls.io/repos/github/rcmachado/changelog/badge.svg?branch=add-coverage)](https://coveralls.io/github/rcmachado/changelog?branch=add-coverage)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rcmachado/changelog)](https://goreportcard.com/report/github.com/rcmachado/changelog)
 
 `changelog` is a command-line application to read and manipulate
