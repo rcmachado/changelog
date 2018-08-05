@@ -10,8 +10,9 @@ import (
 )
 
 var showCmd = &cobra.Command{
-	Use:   "show",
-	Short: "Show information about version",
+	Use:   "show [version]",
+	Short: "Show changelog for [version]",
+	Long:  `Show changelog section and entries for version [version]`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		input := readChangelog()
@@ -20,7 +21,7 @@ var showCmd = &cobra.Command{
 
 		v := chg.Version(args[0])
 		if v == nil {
-			fmt.Printf("Unknown version %s\n", args[0])
+			fmt.Printf("Unknown version: '%s'\n", args[0])
 			os.Exit(3)
 		}
 
