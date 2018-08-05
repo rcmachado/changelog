@@ -19,6 +19,11 @@ jobs:
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
             go test -cover -race -coverprofile=${TEST_RESULTS}/coverage.out -v ./... | tee ${TEST_RESULTS}/go-test.out
       - run: goveralls -coverprofile=${TEST_RESULTS}/coverage.out -service=circle-ci -repotoken="${COVERALLS_TOKEN}"
+      - run:
+          command: |
+            go get -u gopkg.in/alecthomas/gometalinter.v2
+            gometalinter.v2 --install
+            gometalinter.v2 --vendor ./...
       - store_artifacts:
           path: /tmp/test-results
           destination: raw-test-output

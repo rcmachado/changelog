@@ -1,0 +1,20 @@
+{
+  "EnableAll": true,
+  "Disable": [
+    "dupl",
+    "errcheck",
+    "gas",
+    "gocyclo",
+    "megacheck"
+  ],
+  "Enable": [
+    "gofmt",
+    "goimports",
+    "gosimple",
+    "unused",
+    "staticcheck",
+    "nakedret",
+    "misspell"
+  ],
+  "Vendor": true
+}
