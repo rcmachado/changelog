@@ -12,9 +12,8 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "changelog",
-	Short: "changelog parses and validate changelogs",
-	Long: `changelog parses and validates markdown changelog files
-following the keepachangelog.com specification.`,
+	Short: "Manipulate and validate changelog files",
+	Long:  `changelog manipulate and validate markdown changelog files following the keepachangelog.com specification.`,
 }
 
 var inputFilename string
@@ -22,8 +21,8 @@ var outputFilename string
 
 func init() {
 	flags := rootCmd.PersistentFlags()
-	flags.StringVarP(&inputFilename, "filename", "f", "CHANGELOG.md", "Changelog file (use '-' for stdin)")
-	flags.StringVarP(&outputFilename, "output", "o", "-", "Output file (use '-' for stdout)")
+	flags.StringVarP(&inputFilename, "filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
+	flags.StringVarP(&outputFilename, "output", "o", "-", "Output file or '-' for stdout")
 }
 
 func readChangelog() []byte {
