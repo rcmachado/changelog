@@ -31,12 +31,36 @@ $ make build
 
 ## Usage
 
+```!bash
+changelog manipulate and validate markdown changelog files following the keepachangelog.com specification.
+
+Usage:
+  changelog [command]
+
+Available Commands:
+  fmt         Reformat the change log file
+  help        Help about any command
+  release     Change Unreleased to [version]
+  show        Show changelog for [version]
+
+Flags:
+  -f, --filename string   Changelog file or '-' for stdin (default "CHANGELOG.md")
+  -h, --help              help for changelog
+  -o, --output string     Output file or '-' for stdout (default "-")
+
+Use "changelog [command] --help" for more information about a command.
+```
+
+### fmt
+
 Normalize file format (see [Formatting](#formatting) for the specific
 transformation applied):
 
 ```bash
 $ changelog fmt
 ```
+
+### show
 
 Show what will be in the next release:
 
@@ -49,6 +73,8 @@ Show the change log for a specific version:
 ```bash
 $ changelog show 1.2.3
 ```
+
+### release
 
 Create a new release:
 
