@@ -45,12 +45,12 @@ jobs:
       - attach_workspace:
           at: /go/src/github.com/rcmachado/changelog
       - run: go get -v -t -d ./...
-      - run: go build -o changelog main.go
+      - run: go build -o changelog-current main.go
       - run:
           command: |
             [[ "$CIRCLE_TAG" == "" ]] && OPTS="--snapshot"
             curl -o /tmp/goreleaser -sL https://git.io/goreleaser
-            bash /tmp/goreleaser $OPTS --release-notes <(/go/src/github.com/rcmachado/changelog/changelog -f /go/src/github.com/rcmachado/changelog/CHANGELOG.md show ${CIRCLE_TAG:-unreleased})
+            bash /tmp/goreleaser $OPTS --release-notes <(/go/src/github.com/rcmachado/changelog/changelog-current -f /go/src/github.com/rcmachado/changelog/CHANGELOG.md show ${CIRCLE_TAG:-unreleased})
       - store_artifacts:
           path: dist
           destination: builds
