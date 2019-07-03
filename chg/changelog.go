@@ -32,6 +32,25 @@ func (c *Changelog) Version(version string) *Version {
 	return nil
 }
 
+// AddItem includes the message under the proper section of Unreleased version
+func (c *Changelog) AddItem(section ChangeType, message string) {
+	v := c.Version("Unreleased")
+	if v == nil {
+		v = &Version{Name: "Unreleased"}
+		c.Versions = append([]*Version{v}, c.Versions...)
+	}
+
+	s := v.Change(section)
+	if s == nil {
+		s = NewChangeList("Added")
+		v.Changes = append(v.Changes, s)
+	}
+	item := &Item{
+		Description: message,
+	}
+	s.Items = append(s.Items, item)
+}
+
 // Release transforms Unreleased into the version informed
 func (c *Changelog) Release(newVersion Version) (*Version, error) {
 	oldUnreleased := c.Version("Unreleased")
