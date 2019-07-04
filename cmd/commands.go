@@ -15,7 +15,8 @@ func buildCommands(rootCmd *cobra.Command) {
 		chg.Added, chg.Changed, chg.Deprecated, chg.Fixed, chg.Removed, chg.Security,
 	}
 
-	for _, cmdType := range cmdTypes {
+	for _, changeType := range cmdTypes {
+		cmdType := changeType
 		cmd := &cobra.Command{
 			Use:   strings.ToLower(cmdType.String()),
 			Short: fmt.Sprintf("Add item under '%s' section", cmdType.String()),
