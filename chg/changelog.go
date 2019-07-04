@@ -42,7 +42,7 @@ func (c *Changelog) AddItem(section ChangeType, message string) {
 
 	s := v.Change(section)
 	if s == nil {
-		s = NewChangeList("Added")
+		s = NewChangeList(section.String())
 		v.Changes = append(v.Changes, s)
 	}
 	item := &Item{
