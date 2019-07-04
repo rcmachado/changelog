@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type cmds map[string]interface{}
-
 func buildCommands(rootCmd *cobra.Command) {
 	cmdTypes := []chg.ChangeType{
 		chg.Added, chg.Changed, chg.Deprecated, chg.Fixed, chg.Removed, chg.Security,
