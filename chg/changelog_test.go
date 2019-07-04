@@ -32,13 +32,22 @@ func TestChangelogVersion(t *testing.T) {
 }
 
 func TestChangelogAddItem(t *testing.T) {
-	t.Run("empty-changelog", func(t *testing.T) {
+	t.Run("empty-changelog-added", func(t *testing.T) {
 		c := Changelog{}
 		c.AddItem(Added, "my message")
 
 		assert.NotNil(t, c.Version("Unreleased"))
 		assert.NotNil(t, c.Version("Unreleased").Change(Added))
 	})
+
+	t.Run("empty-changelog-changed", func(t *testing.T) {
+		c := Changelog{}
+		c.AddItem(Security, "my message")
+
+		assert.NotNil(t, c.Version("Unreleased"))
+		assert.NotNil(t, c.Version("Unreleased").Change(Security))
+	})
+
 }
 
 func TestChangelogRelease(t *testing.T) {
