@@ -22,11 +22,8 @@ jobs:
       - run:
           command: |
             [ ! -z "${COVERALLS_TOKEN}" ] && goveralls -coverprofile=${TEST_RESULTS}/coverage.out -service=circle-ci -repotoken="${COVERALLS_TOKEN}"
-      # - run:
-      #    command: |
-      #      go get -u gopkg.in/alecthomas/gometalinter.v2
-      #      gometalinter.v2 --install
-      #      gometalinter.v2 --vendor ./...
+      - run:
+         command: make lint
       - save_cache:
           key: v1-pkg-cache-{{ checksum "go.sum" }}
           paths:
