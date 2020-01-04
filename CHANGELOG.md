@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Replaced [dep](https://github.com/golang/dep) with [Go Modules](https://blog.golang.org/using-go-modules)
 - Replaced [gometalinter.v2](https://github.com/alecthomas/gometalinter) with [golang-ci](https://github.com/golangci/golangci-lint)
+- Updated [stretchr/testify](github.com/stretchr/testify) to v1.4.0
+- Updated [spf13/cobra](github.com/spf13/cobra) to v0.0.5
 
 ## [0.2.0] - 2018-07-20
 ### Added
