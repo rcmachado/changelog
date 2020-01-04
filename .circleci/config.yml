@@ -10,8 +10,6 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p $TEST_RESULTS
-      - run: go get -u github.com/golang/dep/cmd/dep
-      - run: dep ensure -vendor-only
       - run: go get -u github.com/jstemmer/go-junit-report
       - run: go get -u github.com/mattn/goveralls
       - run:
