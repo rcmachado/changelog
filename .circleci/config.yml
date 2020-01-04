@@ -3,15 +3,16 @@ version: 2
 jobs:
   tests:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.13
     working_directory: /go/src/github.com/rcmachado/changelog
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-pkg-cache-{{ checksum "go.sum" }}
       - run: mkdir -p $TEST_RESULTS
-      - run: go get -u github.com/golang/dep/cmd/dep
-      - run: dep ensure -vendor-only
       - run: go get -u github.com/jstemmer/go-junit-report
       - run: go get -u github.com/mattn/goveralls
       - run:
@@ -21,29 +22,30 @@ jobs:
       - run:
           command: |
             [ ! -z "${COVERALLS_TOKEN}" ] && goveralls -coverprofile=${TEST_RESULTS}/coverage.out -service=circle-ci -repotoken="${COVERALLS_TOKEN}"
-      - run:
-          command: |
-            go get -u gopkg.in/alecthomas/gometalinter.v2
-            gometalinter.v2 --install
-            gometalinter.v2 --vendor ./...
+      # - run:
+      #    command: |
+      #      go get -u gopkg.in/alecthomas/gometalinter.v2
+      #      gometalinter.v2 --install
+      #      gometalinter.v2 --vendor ./...
+      - save_cache:
+          key: v1-pkg-cache-{{ checksum "go.sum" }}
+          paths:
+            - /go/pkg
       - store_artifacts:
           path: /tmp/test-results
           destination: raw-test-output
       - store_test_results:
           path: /tmp/test-results
-      - persist_to_workspace:
-          root: .
-          paths:
-            - vendor
 
   release:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.13
     working_directory: /go/src/github.com/rcmachado/changelog
     steps:
       - checkout
-      - attach_workspace:
-          at: /go/src/github.com/rcmachado/changelog
+      - restore_cache:
+          keys:
+            - v1-pkg-cache-{{ checksum "go.sum" }}
       - run: go get -v -t -d ./...
       - run: go build -o changelog-current main.go
       - run:
