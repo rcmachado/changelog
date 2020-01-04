@@ -1,0 +1,20 @@
+linters:
+  disable-all: false
+  disable:
+    - dupl
+    - errcheck
+    - gas
+    - gocyclo
+    - megacheck
+  enable:
+    - gofmt
+    - goimports
+    - gosimple
+    - unused
+    - staticcheck
+    - nakedret
+    - misspell
+linters-settings:
+  govet:
+    disable:
+      - composites
