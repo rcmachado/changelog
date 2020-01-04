@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/rcmachado/changelog/chg"
-	blackfriday "gopkg.in/russross/blackfriday.v2"
+	"github.com/russross/blackfriday"
 )
 
 // Parse input into a proper Changelog struct
