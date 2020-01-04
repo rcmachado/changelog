@@ -3,7 +3,7 @@ version: 2
 jobs:
   tests:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.13
     working_directory: /go/src/github.com/rcmachado/changelog
     environment:
       TEST_RESULTS: /tmp/test-results
@@ -36,7 +36,7 @@ jobs:
 
   release:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/golang:1.13
     working_directory: /go/src/github.com/rcmachado/changelog
     steps:
       - checkout
