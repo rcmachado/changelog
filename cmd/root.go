@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -8,16 +9,48 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
+
+var inputFile *bufio.Reader
+var outputFile *bufio.Writer
 
 var rootCmd = &cobra.Command{
 	Use:   "changelog",
 	Short: "Manipulate and validate changelog files",
 	Long:  `changelog manipulate and validate markdown changelog files following the keepachangelog.com specification.`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		fs := cmd.Flags()
+
+		fdr := openFileOrExit(fs, "filename", os.O_RDONLY)
+		inputFile = bufio.NewReader(fdr)
+
+		fdw := openFileOrExit(fs, "output", os.O_WRONLY|os.O_CREATE)
+		outputFile = bufio.NewWriter(fdw)
+	},
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		if outputFile != nil {
+			outputFile.Flush()
+		}
+	},
 }
 
 var inputFilename string
 var outputFilename string
+
+func openFileOrExit(fs *pflag.FlagSet, option string, flag int) *os.File {
+	filename, err := fs.GetString(option)
+	if err != nil {
+		fmt.Printf("Failed to get option '%s': %s\n", option, err)
+		os.Exit(2)
+	}
+	file, err := os.OpenFile(filename, flag, 0644)
+	if err != nil {
+		fmt.Printf("Failed to open file '%s': %s\n", filename, err)
+		os.Exit(2)
+	}
+	return file
+}
 
 func init() {
 	flags := rootCmd.PersistentFlags()
