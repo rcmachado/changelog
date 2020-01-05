@@ -22,7 +22,9 @@ var outputFilename string
 func init() {
 	flags := rootCmd.PersistentFlags()
 	flags.StringVarP(&inputFilename, "filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
+	rootCmd.MarkFlagFilename("filename")
 	flags.StringVarP(&outputFilename, "output", "o", "-", "Output file or '-' for stdout")
+	rootCmd.MarkFlagFilename("output")
 }
 
 func readChangelog() []byte {
