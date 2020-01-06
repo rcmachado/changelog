@@ -1,8 +1,9 @@
 package parser_test
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/rcmachado/changelog/chg"
@@ -10,13 +11,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func readFile(t *testing.T, filename string) []byte {
-	input, err := ioutil.ReadFile(fmt.Sprintf("testdata/%s.md", filename))
+func readFile(t *testing.T, filename string) *bufio.Reader {
+	input, err := os.Open(fmt.Sprintf("testdata/%s.md", filename))
 	if err != nil {
 		t.Errorf("Failed to read testdata: %s", err)
 	}
 
-	return input
+	return bufio.NewReader(input)
 }
 
 func TestParserParse(t *testing.T) {

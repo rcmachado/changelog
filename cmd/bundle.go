@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -21,16 +20,9 @@ var bundleCmd = &cobra.Command{
 	Short: "Bundles files containing unrelased changelog entries",
 	Long:  "Bundles multiple files that follows the changetype/file.md structure into the Unreleased version",
 	Run: func(cmd *cobra.Command, args []string) {
-		var bi bytes.Buffer
-		bi.ReadFrom(inputFile)
-
-		changelog := parser.Parse(bi.Bytes())
-		bundleFiles(directory, bi.Bytes(), args, changelog)
-
-		var buf bytes.Buffer
-		changelog.Render(&buf)
-
-		outputFile.ReadFrom(&buf)
+		changelog := parser.Parse(inputFile)
+		bundleFiles(directory, changelog)
+		changelog.Render(outputFile)
 	},
 }
 
@@ -39,7 +31,7 @@ func init() {
 	rootCmd.AddCommand(bundleCmd)
 }
 
-func bundleFiles(root string, input []byte, args []string, c *chg.Changelog) {
+func bundleFiles(root string, c *chg.Changelog) {
 	validTypes := map[string]chg.ChangeType{
 		"added":      chg.Added,
 		"changed":    chg.Changed,

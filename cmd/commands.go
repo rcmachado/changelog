@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
@@ -22,16 +21,9 @@ func buildCommands(rootCmd *cobra.Command) {
 			Short: fmt.Sprintf("Add item under '%s' section", cmdType.String()),
 			Args:  cobra.MinimumNArgs(1),
 			Run: func(cmd *cobra.Command, args []string) {
-				var bi bytes.Buffer
-				bi.ReadFrom(inputFile)
-
-				changelog := parser.Parse(bi.Bytes())
+				changelog := parser.Parse(inputFile)
 				changelog.AddItem(cmdType, strings.Join(args, " "))
-
-				var buf bytes.Buffer
-				changelog.Render(&buf)
-
-				outputFile.ReadFrom(&buf)
+				changelog.Render(outputFile)
 			},
 		}
 

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"regexp"
 	"strings"
 
@@ -12,10 +14,15 @@ import (
 )
 
 // Parse input into a proper Changelog struct
-func Parse(input []byte) *chg.Changelog {
+func Parse(r io.Reader) *chg.Changelog {
 	extensions := blackfriday.NoIntraEmphasis | blackfriday.Strikethrough
 	renderer := newRenderer()
 
+	input, err := ioutil.ReadAll(r)
+	if err != nil {
+		log.Fatal(err)
+		return nil
+	}
 	blackfriday.Run(input, blackfriday.WithExtensions(extensions), blackfriday.WithRenderer(&renderer))
 
 	return renderer.Result()
