@@ -22,16 +22,16 @@ func buildCommands(rootCmd *cobra.Command) {
 			Short: fmt.Sprintf("Add item under '%s' section", cmdType.String()),
 			Args:  cobra.MinimumNArgs(1),
 			Run: func(cmd *cobra.Command, args []string) {
-				input := readChangelog()
+				var bi bytes.Buffer
+				bi.ReadFrom(inputFile)
 
-				changelog := parser.Parse(input)
+				changelog := parser.Parse(bi.Bytes())
 				changelog.AddItem(cmdType, strings.Join(args, " "))
 
 				var buf bytes.Buffer
 				changelog.Render(&buf)
-				output := buf.Bytes()
 
-				writeChangelog(output)
+				outputFile.ReadFrom(&buf)
 			},
 		}
 
