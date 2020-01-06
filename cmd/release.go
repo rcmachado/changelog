@@ -25,13 +25,9 @@ It will normalize the output with the new version.
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		input := readChangelog()
-
 		var buf bytes.Buffer
-		release(input, args, &buf)
-		output := buf.Bytes()
-
-		writeChangelog(output)
+		release(inputFile, args, &buf)
+		outputFile.ReadFrom(&buf)
 	},
 }
 
@@ -42,7 +38,7 @@ func init() {
 	rootCmd.AddCommand(releaseCmd)
 }
 
-func release(input []byte, args []string, w io.Writer) {
+func release(input io.Reader, args []string, w io.Writer) {
 	version := chg.Version{
 		Name: args[0],
 		Date: releaseDate,
@@ -52,7 +48,10 @@ func release(input []byte, args []string, w io.Writer) {
 		version.Link = compareURL
 	}
 
-	changelog := parser.Parse(input)
+	var bi bytes.Buffer
+	bi.ReadFrom(inputFile)
+	changelog := parser.Parse(bi.Bytes())
+
 	_, err := changelog.Release(version)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create release '%s': %s\n", args[0], err)
