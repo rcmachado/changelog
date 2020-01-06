@@ -21,16 +21,16 @@ var bundleCmd = &cobra.Command{
 	Short: "Bundles files containing unrelased changelog entries",
 	Long:  "Bundles multiple files that follows the changetype/file.md structure into the Unreleased version",
 	Run: func(cmd *cobra.Command, args []string) {
-		input := readChangelog()
+		var bi bytes.Buffer
+		bi.ReadFrom(inputFile)
 
-		changelog := parser.Parse(input)
-		bundleFiles(directory, input, args, changelog)
+		changelog := parser.Parse(bi.Bytes())
+		bundleFiles(directory, bi.Bytes(), args, changelog)
 
 		var buf bytes.Buffer
 		changelog.Render(&buf)
-		output := buf.Bytes()
 
-		writeChangelog(output)
+		outputFile.ReadFrom(&buf)
 	},
 }
 
