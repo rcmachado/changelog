@@ -3,10 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -35,9 +32,6 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-var inputFilename string
-var outputFilename string
-
 func openFileOrExit(fs *pflag.FlagSet, option string, flag int, defaultIfDash *os.File) *os.File {
 	filename, err := fs.GetString(option)
 	if err != nil {
@@ -59,66 +53,10 @@ func openFileOrExit(fs *pflag.FlagSet, option string, flag int, defaultIfDash *o
 
 func init() {
 	flags := rootCmd.PersistentFlags()
-	flags.StringVarP(&inputFilename, "filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
+	flags.StringP("filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
 	rootCmd.MarkFlagFilename("filename")
-	flags.StringVarP(&outputFilename, "output", "o", "-", "Output file or '-' for stdout")
+	flags.StringP("output", "o", "-", "Output file or '-' for stdout")
 	rootCmd.MarkFlagFilename("output")
-}
-
-func readChangelog() []byte {
-	name := inputFilename
-	if name == "-" {
-		content, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s", err)
-			os.Exit(2)
-		}
-		return content
-	}
-
-	var prefixDir string
-	if strings.HasPrefix(name, "/") {
-		prefixDir = ""
-	} else {
-		prefixDir = "./"
-	}
-	filename, err := filepath.Abs(prefixDir + name)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(2)
-	}
-	content, err := ioutil.ReadFile(filename)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(2)
-	}
-	return content
-}
-
-func writeChangelog(content []byte) {
-	if outputFilename == "-" {
-		os.Stdout.Write(content)
-		return
-	}
-
-	var prefixDir string
-	if strings.HasPrefix(outputFilename, "/") {
-		prefixDir = ""
-	} else {
-		prefixDir = "./"
-	}
-
-	filename, err := filepath.Abs(prefixDir + outputFilename)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(2)
-	}
-
-	err = ioutil.WriteFile(filename, content, 0644)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(2)
-	}
 }
 
 // Execute the program with command-line args
