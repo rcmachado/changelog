@@ -48,9 +48,7 @@ func release(input io.Reader, args []string, w io.Writer) {
 		version.Link = compareURL
 	}
 
-	var bi bytes.Buffer
-	bi.ReadFrom(inputFile)
-	changelog := parser.Parse(bi.Bytes())
+	changelog := parser.Parse(inputFile)
 
 	_, err := changelog.Release(version)
 	if err != nil {

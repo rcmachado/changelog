@@ -15,9 +15,7 @@ var showCmd = &cobra.Command{
 	Long:  `Show changelog section and entries for version [version]`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var bi bytes.Buffer
-		bi.ReadFrom(inputFile)
-		changelog := parser.Parse(bi.Bytes())
+		changelog := parser.Parse(inputFile)
 
 		v := changelog.Version(args[0])
 		if v == nil {
