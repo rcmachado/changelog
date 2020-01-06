@@ -12,15 +12,14 @@ var fmtCmd = &cobra.Command{
 	Short: "Reformat the change log file",
 	Long:  "Reformats changelog input following keepachangelog.com spec",
 	Run: func(cmd *cobra.Command, args []string) {
-		input := readChangelog()
-
-		chg := parser.Parse(input)
+		var bi bytes.Buffer
+		bi.ReadFrom(inputFile)
+		changelog := parser.Parse(bi.Bytes())
 
 		var buf bytes.Buffer
-		chg.Render(&buf)
-		output := buf.Bytes()
+		changelog.Render(&buf)
 
-		writeChangelog(output)
+		outputFile.ReadFrom(&buf)
 	},
 }
 
