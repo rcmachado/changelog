@@ -15,11 +15,11 @@ var showCmd = &cobra.Command{
 	Long:  `Show changelog section and entries for version [version]`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		input := readChangelog()
+		var bi bytes.Buffer
+		bi.ReadFrom(inputFile)
+		changelog := parser.Parse(bi.Bytes())
 
-		chg := parser.Parse(input)
-
-		v := chg.Version(args[0])
+		v := changelog.Version(args[0])
 		if v == nil {
 			fmt.Printf("Unknown version: '%s'\n", args[0])
 			os.Exit(3)
@@ -27,9 +27,8 @@ var showCmd = &cobra.Command{
 
 		var buf bytes.Buffer
 		v.RenderChanges(&buf)
-		output := buf.Bytes()
 
-		writeChangelog(output)
+		outputFile.ReadFrom(&buf)
 	},
 }
 
