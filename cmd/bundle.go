@@ -13,13 +13,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var directory string
-
 var bundleCmd = &cobra.Command{
 	Use:   "bundle",
 	Short: "Bundles files containing unrelased changelog entries",
 	Long:  "Bundles multiple files that follows the changetype/file.md structure into the Unreleased version",
 	Run: func(cmd *cobra.Command, args []string) {
+		fs := cmd.Flags()
+		directory, _ := fs.GetString("directory")
 		changelog := parser.Parse(inputFile)
 		bundleFiles(directory, changelog)
 		changelog.Render(outputFile)
@@ -27,7 +27,7 @@ var bundleCmd = &cobra.Command{
 }
 
 func init() {
-	bundleCmd.Flags().StringVarP(&directory, "directory", "d", "changelog-unreleased", "Directory where we store entries to be bundled")
+	bundleCmd.Flags().StringP("directory", "d", "changelog-unreleased", "Directory where we store entries to be bundled")
 	rootCmd.AddCommand(bundleCmd)
 }
 
