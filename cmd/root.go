@@ -22,10 +22,10 @@ var rootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		fs := cmd.Flags()
 
-		fdr := openFileOrExit(fs, "filename", os.O_RDONLY)
+		fdr := openFileOrExit(fs, "filename", os.O_RDONLY, os.Stdin)
 		inputFile = bufio.NewReader(fdr)
 
-		fdw := openFileOrExit(fs, "output", os.O_WRONLY|os.O_CREATE)
+		fdw := openFileOrExit(fs, "output", os.O_WRONLY|os.O_CREATE, os.Stdout)
 		outputFile = bufio.NewWriter(fdw)
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
@@ -38,12 +38,17 @@ var rootCmd = &cobra.Command{
 var inputFilename string
 var outputFilename string
 
-func openFileOrExit(fs *pflag.FlagSet, option string, flag int) *os.File {
+func openFileOrExit(fs *pflag.FlagSet, option string, flag int, defaultIfDash *os.File) *os.File {
 	filename, err := fs.GetString(option)
 	if err != nil {
 		fmt.Printf("Failed to get option '%s': %s\n", option, err)
 		os.Exit(2)
 	}
+
+	if filename == "-" {
+		return defaultIfDash
+	}
+
 	file, err := os.OpenFile(filename, flag, 0644)
 	if err != nil {
 		fmt.Printf("Failed to open file '%s': %s\n", filename, err)
