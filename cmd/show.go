@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 
@@ -23,10 +22,7 @@ var showCmd = &cobra.Command{
 			os.Exit(3)
 		}
 
-		var buf bytes.Buffer
-		v.RenderChanges(&buf)
-
-		outputFile.ReadFrom(&buf)
+		v.RenderChanges(outputFile)
 	},
 }
 

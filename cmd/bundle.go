@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -23,11 +22,7 @@ var bundleCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		changelog := parser.Parse(inputFile)
 		bundleFiles(directory, changelog)
-
-		var buf bytes.Buffer
-		changelog.Render(&buf)
-
-		outputFile.ReadFrom(&buf)
+		changelog.Render(outputFile)
 	},
 }
 

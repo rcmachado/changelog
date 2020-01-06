@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -25,9 +24,7 @@ It will normalize the output with the new version.
 `,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var buf bytes.Buffer
-		release(inputFile, args, &buf)
-		outputFile.ReadFrom(&buf)
+		release(inputFile, args, outputFile)
 	},
 }
 

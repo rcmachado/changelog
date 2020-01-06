@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
@@ -24,11 +23,7 @@ func buildCommands(rootCmd *cobra.Command) {
 			Run: func(cmd *cobra.Command, args []string) {
 				changelog := parser.Parse(inputFile)
 				changelog.AddItem(cmdType, strings.Join(args, " "))
-
-				var buf bytes.Buffer
-				changelog.Render(&buf)
-
-				outputFile.ReadFrom(&buf)
+				changelog.Render(outputFile)
 			},
 		}
 

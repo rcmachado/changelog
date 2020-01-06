@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"bytes"
-
 	"github.com/rcmachado/changelog/parser"
 	"github.com/spf13/cobra"
 )
@@ -13,11 +11,7 @@ var fmtCmd = &cobra.Command{
 	Long:  "Reformats changelog input following keepachangelog.com spec",
 	Run: func(cmd *cobra.Command, args []string) {
 		changelog := parser.Parse(inputFile)
-
-		var buf bytes.Buffer
-		changelog.Render(&buf)
-
-		outputFile.ReadFrom(&buf)
+		changelog.Render(outputFile)
 	},
 }
 
