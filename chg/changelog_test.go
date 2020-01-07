@@ -7,6 +7,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewEmptyChangelog(t *testing.T) {
+	c := NewEmptyChangelog("https://example.com/abcdef...HEAD")
+	assert.NotEmpty(t, c.Preamble)
+
+	unreleased := c.Version("Unreleased")
+	assert.NotNil(t, unreleased)
+	assert.Equal(t, unreleased.Name, "Unreleased")
+	assert.Equal(t, unreleased.Link, "https://example.com/abcdef...HEAD")
+
+	added := unreleased.Change(Added)
+	assert.NotNil(t, added)
+	assert.Equal(t, 1, len(added.Items))
+
+	assert.NotNil(t, added.Items[0])
+	assert.Equal(t, added.Items[0].Description, "First commit")
+}
+
 func TestChangelogVersion(t *testing.T) {
 	unreleased := &Version{Name: "Unreleased"}
 	v123 := &Version{Name: "1.2.3"}
