@@ -79,7 +79,12 @@ func (c *Changelog) AddItem(section ChangeType, message string) {
 // Release transforms Unreleased into the version informed
 func (c *Changelog) Release(newVersion Version) (*Version, error) {
 	oldUnreleased := c.Version("Unreleased")
-	prevVersion := c.Versions[1]
+	var prevVersion *Version
+	if len(c.Versions) > 1 {
+		prevVersion = c.Versions[1]
+	} else {
+		prevVersion = nil
+	}
 
 	newUnreleased := Version{
 		Name: "Unreleased",

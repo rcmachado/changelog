@@ -115,6 +115,36 @@ func TestChangelogRelease(t *testing.T) {
 	})
 }
 
+func TestChangelogReleaseMinimal(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "http://example.com/abcdef..HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	v := Version{Name: "1.0.0", Link: "https://localhost/<prev>..<next>"}
+	newVersion, err := c.Release(v)
+
+	assert.Equal(t, "1.0.0", newVersion.Name)
+	assert.Equal(t, 1, len(newVersion.Changes))
+
+	unreleased := c.Version("Unreleased")
+	assert.Equal(t, "https://localhost/1.0.0..HEAD", unreleased.Link)
+
+	assert.Nil(t, err)
+}
+
 func TestChangelogRenderLinks(t *testing.T) {
 	unreleased := &Version{Name: "Unreleased", Link: "http://example.com/unreleased"}
 	v123 := &Version{Name: "1.2.3", Link: "http://example.com/1.2.3"}
