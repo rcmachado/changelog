@@ -45,7 +45,7 @@ Available Commands:
   fixed       Add item under 'Fixed' section
   fmt         Reformat the change log file
   help        Help about any command
-  init        creates a new changelog file
+  init        Create a new changelog file
   release     Change Unreleased to [version]
   removed     Add item under 'Removed' section
   security    Add item under 'Security' section
@@ -65,7 +65,7 @@ Creates a new `CHANGELOG.md` file (or any other specified by `--output/-o` flag)
 
 ```bash
 $ changelog init
-Changelog file 'CHANGELOG.md' created
+Changelog file 'CHANGELOG.md' created.
 ```
 
 ### fmt
