@@ -65,6 +65,9 @@ func openFileOrExit(fs *pflag.FlagSet, option string, flag int, defaultIfDash *o
 func init() {
 	ioStreams = &IOStreams{}
 
+	initCmd := newInitCmd(ioStreams)
+	rootCmd.AddCommand(initCmd)
+
 	fmtCmd := NewFmtCmd(ioStreams)
 	rootCmd.AddCommand(fmtCmd)
 
