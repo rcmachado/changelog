@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -11,6 +12,13 @@ import (
 
 var inputFile *bufio.Reader
 var outputFile *bufio.Writer
+
+var ioStreams *IOStreams
+
+type IOStreams struct {
+	In  io.Reader
+	Out io.Writer
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "changelog",
@@ -24,6 +32,9 @@ var rootCmd = &cobra.Command{
 
 		fdw := openFileOrExit(fs, "output", os.O_WRONLY|os.O_CREATE, os.Stdout)
 		outputFile = bufio.NewWriter(fdw)
+
+		ioStreams.In = inputFile
+		ioStreams.Out = outputFile
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		if outputFile != nil {
@@ -52,6 +63,8 @@ func openFileOrExit(fs *pflag.FlagSet, option string, flag int, defaultIfDash *o
 }
 
 func init() {
+	ioStreams = &IOStreams{}
+
 	flags := rootCmd.PersistentFlags()
 	flags.StringP("filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
 	rootCmd.MarkFlagFilename("filename")
