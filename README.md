@@ -31,16 +31,24 @@ $ make build
 
 ## Usage
 
-```!bash
+```
 changelog manipulate and validate markdown changelog files following the keepachangelog.com specification.
 
 Usage:
   changelog [command]
 
 Available Commands:
+  added       Add item under 'Added' section
+  bundle      Bundles files containing unrelased changelog entries
+  changed     Add item under 'Changed' section
+  deprecated  Add item under 'Deprecated' section
+  fixed       Add item under 'Fixed' section
   fmt         Reformat the change log file
   help        Help about any command
+  init        creates a new changelog file
   release     Change Unreleased to [version]
+  removed     Add item under 'Removed' section
+  security    Add item under 'Security' section
   show        Show changelog for [version]
 
 Flags:
@@ -49,6 +57,14 @@ Flags:
   -o, --output string     Output file or '-' for stdout (default "-")
 
 Use "changelog [command] --help" for more information about a command.
+```
+
+### init
+
+Creates a new `CHANGELOG.md` file (or any other specified by `--output/-o` flag) in the current directory:
+
+```bash
+$ changelog init
 ```
 
 ### fmt
