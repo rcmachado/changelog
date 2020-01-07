@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCmd(t *testing.T) {
+func TestFmtCmd(t *testing.T) {
 	changelog := `# Changelog
 
 All notable changes to this project will be documented in this file.
