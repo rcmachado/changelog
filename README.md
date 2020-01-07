@@ -65,6 +65,7 @@ Creates a new `CHANGELOG.md` file (or any other specified by `--output/-o` flag)
 
 ```bash
 $ changelog init
+Changelog file 'CHANGELOG.md' created
 ```
 
 ### fmt
