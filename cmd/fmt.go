@@ -5,16 +5,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var fmtCmd = &cobra.Command{
-	Use:   "fmt",
-	Short: "Reformat the change log file",
-	Long:  "Reformats changelog input following keepachangelog.com spec",
-	Run: func(cmd *cobra.Command, args []string) {
-		changelog := parser.Parse(inputFile)
-		changelog.Render(outputFile)
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(fmtCmd)
+func NewFmtCmd(iostreams *IOStreams) *cobra.Command {
+	return &cobra.Command{
+		Use:   "fmt",
+		Short: "Reformat the change log file",
+		Long:  "Reformats changelog input following keepachangelog.com spec",
+		Run: func(cmd *cobra.Command, args []string) {
+			changelog := parser.Parse(iostreams.In)
+			changelog.Render(iostreams.Out)
+		},
+	}
 }
