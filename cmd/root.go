@@ -65,6 +65,9 @@ func openFileOrExit(fs *pflag.FlagSet, option string, flag int, defaultIfDash *o
 func init() {
 	ioStreams = &IOStreams{}
 
+	fmtCmd := NewFmtCmd(ioStreams)
+	rootCmd.AddCommand(fmtCmd)
+
 	flags := rootCmd.PersistentFlags()
 	flags.StringP("filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
 	rootCmd.MarkFlagFilename("filename")
