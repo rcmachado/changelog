@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFormat(t *testing.T) {
+func TestCmd(t *testing.T) {
 	changelog := `# Changelog
 
 All notable changes to this project will be documented in this file.
@@ -60,13 +60,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [0.1.0]: https://github.com/rcmachado/changelog/compare/ae761ff...0.1.0
 `
 
-	var out bytes.Buffer
+	out := new(bytes.Buffer)
 	iostreams := &IOStreams{
 		In:  strings.NewReader(changelog),
-		Out: &out,
+		Out: out,
 	}
 
-	format(iostreams)
+	fmt := NewFmtCmd(iostreams)
+	_, err := fmt.ExecuteC()
 
+	assert.Nil(t, err)
 	assert.Equal(t, expected, string(out.Bytes()))
 }
