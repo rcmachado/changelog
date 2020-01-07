@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/rcmachado/changelog/chg"
 	"github.com/spf13/cobra"
 )
