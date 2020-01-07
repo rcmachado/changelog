@@ -71,6 +71,9 @@ func init() {
 	fmtCmd := NewFmtCmd(ioStreams)
 	rootCmd.AddCommand(fmtCmd)
 
+	releaseCmd := newReleaseCmd(ioStreams)
+	rootCmd.AddCommand(releaseCmd)
+
 	flags := rootCmd.PersistentFlags()
 	flags.StringP("filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
 	rootCmd.MarkFlagFilename("filename")
