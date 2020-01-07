@@ -90,7 +90,7 @@ func (c *Changelog) Release(newVersion Version) (*Version, error) {
 		Name: "Unreleased",
 	}
 
-	if prevVersion == oldUnreleased && newVersion.Link == "" {
+	if (prevVersion == nil || prevVersion == oldUnreleased) && newVersion.Link == "" {
 		// we don't have a previous version
 		return nil, fmt.Errorf("Could not infer the compare link")
 	}

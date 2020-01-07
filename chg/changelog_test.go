@@ -145,6 +145,20 @@ func TestChangelogReleaseMinimal(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestChangelogReleaseFailIfNoVersionLink(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{Name: "Unreleased"},
+		},
+	}
+
+	v := Version{Name: "1.0.0"}
+	newVersion, err := c.Release(v)
+
+	assert.Nil(t, newVersion)
+	assert.Error(t, err)
+}
+
 func TestChangelogRenderLinks(t *testing.T) {
 	unreleased := &Version{Name: "Unreleased", Link: "http://example.com/unreleased"}
 	v123 := &Version{Name: "1.2.3", Link: "http://example.com/1.2.3"}
