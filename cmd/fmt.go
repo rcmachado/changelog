@@ -11,12 +11,8 @@ func NewFmtCmd(iostreams *IOStreams) *cobra.Command {
 		Short: "Reformat the change log file",
 		Long:  "Reformats changelog input following keepachangelog.com spec",
 		Run: func(cmd *cobra.Command, args []string) {
-			format(iostreams)
+			changelog := parser.Parse(iostreams.In)
+			changelog.Render(iostreams.Out)
 		},
 	}
-}
-
-func format(ioStreams *IOStreams) {
-	changelog := parser.Parse(ioStreams.In)
-	changelog.Render(ioStreams.Out)
 }
