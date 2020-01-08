@@ -72,6 +72,11 @@ func init() {
 		newShowCmd(ioStreams),
 	)
 
+	manipulationCmds := newChangeTypeCmds(ioStreams)
+	for _, cmd := range manipulationCmds {
+		rootCmd.AddCommand(cmd)
+	}
+
 	flags := rootCmd.PersistentFlags()
 	flags.StringP("filename", "f", "CHANGELOG.md", "Changelog file or '-' for stdin")
 	rootCmd.MarkFlagFilename("filename")
