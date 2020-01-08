@@ -10,9 +10,6 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var inputFile *bufio.Reader
-var outputFile *bufio.Writer
-
 var ioStreams *IOStreams
 
 type IOStreams struct {
@@ -28,17 +25,14 @@ var rootCmd = &cobra.Command{
 		fs := cmd.Flags()
 
 		fdr := openFileOrExit(fs, "filename", os.O_RDONLY, os.Stdin)
-		inputFile = bufio.NewReader(fdr)
+		ioStreams.In = bufio.NewReader(fdr)
 
 		fdw := openFileOrExit(fs, "output", os.O_WRONLY|os.O_CREATE, os.Stdout)
-		outputFile = bufio.NewWriter(fdw)
-
-		ioStreams.In = inputFile
-		ioStreams.Out = outputFile
+		ioStreams.Out = bufio.NewWriter(fdw)
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		if outputFile != nil {
-			outputFile.Flush()
+		if ioStreams.Out != nil {
+			ioStreams.Out.(*bufio.Writer).Flush()
 		}
 	},
 }
