@@ -72,7 +72,7 @@ func init() {
 		newShowCmd(ioStreams),
 	)
 
-	manipulationCmds := newManipulationCmds(ioStreams)
+	manipulationCmds := newChangeTypeCmds(ioStreams)
 	for _, cmd := range manipulationCmds {
 		rootCmd.AddCommand(cmd)
 	}

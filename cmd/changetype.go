@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newManipulationCmd(iostreams *IOStreams, ct chg.ChangeType) *cobra.Command {
+func newChangeTypeCmd(iostreams *IOStreams, ct chg.ChangeType) *cobra.Command {
 	sectionName := ct.String()
 
 	return &cobra.Command{
@@ -25,7 +25,7 @@ func newManipulationCmd(iostreams *IOStreams, ct chg.ChangeType) *cobra.Command 
 
 }
 
-func newManipulationCmds(iostreams *IOStreams) []*cobra.Command {
+func newChangeTypeCmds(iostreams *IOStreams) []*cobra.Command {
 	cmdTypes := []chg.ChangeType{
 		chg.Added, chg.Changed, chg.Deprecated, chg.Fixed, chg.Removed, chg.Security,
 	}
@@ -34,7 +34,7 @@ func newManipulationCmds(iostreams *IOStreams) []*cobra.Command {
 
 	for idx, changeType := range cmdTypes {
 		cmdType := changeType
-		cmd := newManipulationCmd(iostreams, cmdType)
+		cmd := newChangeTypeCmd(iostreams, cmdType)
 		allCmds[idx] = cmd
 	}
 
