@@ -9,28 +9,34 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func buildCommands(rootCmd *cobra.Command) {
+func newManipulationCmd(iostreams *IOStreams, ct chg.ChangeType) *cobra.Command {
+	sectionName := ct.String()
+
+	return &cobra.Command{
+		Use:   strings.ToLower(sectionName),
+		Short: fmt.Sprintf("Add item under '%s' section", sectionName),
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			changelog := parser.Parse(iostreams.In)
+			changelog.AddItem(ct, strings.Join(args, " "))
+			changelog.Render(iostreams.Out)
+		},
+	}
+
+}
+
+func newManipulationCmds(iostreams *IOStreams) []*cobra.Command {
 	cmdTypes := []chg.ChangeType{
 		chg.Added, chg.Changed, chg.Deprecated, chg.Fixed, chg.Removed, chg.Security,
 	}
 
-	for _, changeType := range cmdTypes {
+	allCmds := make([]*cobra.Command, len(cmdTypes))
+
+	for idx, changeType := range cmdTypes {
 		cmdType := changeType
-		cmd := &cobra.Command{
-			Use:   strings.ToLower(cmdType.String()),
-			Short: fmt.Sprintf("Add item under '%s' section", cmdType.String()),
-			Args:  cobra.MinimumNArgs(1),
-			Run: func(cmd *cobra.Command, args []string) {
-				changelog := parser.Parse(inputFile)
-				changelog.AddItem(cmdType, strings.Join(args, " "))
-				changelog.Render(outputFile)
-			},
-		}
-
-		rootCmd.AddCommand(cmd)
+		cmd := newManipulationCmd(iostreams, cmdType)
+		allCmds[idx] = cmd
 	}
-}
 
-func init() {
-	buildCommands(rootCmd)
+	return allCmds
 }
