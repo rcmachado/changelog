@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/rcmachado/changelog/chg"
@@ -21,7 +20,7 @@ func newReleaseCmd(iostreams *IOStreams) *cobra.Command {
 It will normalize the output with the new version.
 `,
 		Args: cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			fs := cmd.Flags()
 
 			releaseDate, _ := fs.GetString("release-date")
@@ -40,11 +39,12 @@ It will normalize the output with the new version.
 
 			_, err := changelog.Release(version)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Failed to create release '%s': %s\n", args[0], err)
-				os.Exit(3)
+				cmd.SilenceUsage = true
+				return fmt.Errorf("Failed to create release '%s': %s\n", args[0], err)
 			}
 
 			changelog.Render(iostreams.Out)
+			return nil
 		},
 	}
 

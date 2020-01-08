@@ -44,3 +44,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 	assert.Nil(t, err)
 	assert.Equal(t, expected, string(out.Bytes()))
 }
+
+func TestReleaseCmdError(t *testing.T) {
+	changelog, err := ioutil.ReadFile("testdata/minimal-changelog.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	iostreams := &IOStreams{
+		In:  bytes.NewBuffer(changelog),
+		Out: new(bytes.Buffer),
+	}
+
+	release := newReleaseCmd(iostreams)
+	// Missing --compare-url, as the autodetect won't work for the minimal changelog
+	release.SetArgs([]string{"0.1.0", "--release-date", "2018-06-18"})
+	_, err = release.ExecuteC()
+
+	assert.Error(t, err)
+}
