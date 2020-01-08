@@ -64,7 +64,7 @@ Use "changelog [command] --help" for more information about a command.
 Outputs a changelog with only preamble and Unreleased version to standard output. You can specify a filename using `--output/-o` flag:
 
 ```bash
-$ changelog init -o CHANGELOG.md
+$ changelog init -o CHANGELOG.md --compare-url https://github.com/rcmachado/changelog/compare/abcdef...HEAD
 Changelog file 'CHANGELOG.md' created.
 ```
 
