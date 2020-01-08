@@ -29,8 +29,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	}
 
 	cmd := newInitCmd(iostreams)
+	cmd.SetArgs([]string{"--compare-url", "https://github.com/rcmachado/changelog/compare/abcdef...HEAD"})
 	_, err := cmd.ExecuteC()
 
 	assert.Nil(t, err)
 	assert.Equal(t, expected, string(out.Bytes()))
+}
+
+func TestInitCmdRequiresCompareURL(t *testing.T) {
+	iostreams := &IOStreams{
+		In:  nil,
+		Out: new(bytes.Buffer),
+	}
+
+	cmd := newInitCmd(iostreams)
+	_, err := cmd.ExecuteC()
+
+	assert.Error(t, err)
 }

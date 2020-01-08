@@ -8,18 +8,19 @@ import (
 )
 
 func newInitCmd(iostreams *IOStreams) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Initializes a new changelog",
 		Long: `Outputs an empty changelog, with preamble and Unreleased version
 
 You can specify a filename using the --output/-o flag.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			compareURL := "https://github.com/rcmachado/changelog/compare/abcdef...HEAD"
+			fs := cmd.Flags()
+			compareURL, _ := fs.GetString("compare-url")
+
 			c := chg.NewEmptyChangelog(compareURL)
 			c.Render(iostreams.Out)
 
-			fs := cmd.Flags()
 			destination, _ := fs.GetString("output")
 			if destination != "-" {
 				out := cmd.OutOrStdout()
@@ -27,4 +28,9 @@ You can specify a filename using the --output/-o flag.`,
 			}
 		},
 	}
+
+	cmd.Flags().StringP("compare-url", "c", "", "Set compare URL for Unreleased section")
+	cmd.MarkFlagRequired("compare-url")
+
+	return cmd
 }
