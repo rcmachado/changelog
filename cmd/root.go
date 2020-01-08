@@ -69,6 +69,7 @@ func init() {
 		newInitCmd(ioStreams),
 		NewFmtCmd(ioStreams),
 		newReleaseCmd(ioStreams),
+		newShowCmd(ioStreams),
 	)
 
 	flags := rootCmd.PersistentFlags()
