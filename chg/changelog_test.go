@@ -7,6 +7,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewEmptyChangelog(t *testing.T) {
+	c := NewEmptyChangelog("https://example.com/abcdef...HEAD")
+	assert.NotEmpty(t, c.Preamble)
+
+	unreleased := c.Version("Unreleased")
+	assert.NotNil(t, unreleased)
+	assert.Equal(t, unreleased.Name, "Unreleased")
+	assert.Equal(t, unreleased.Link, "https://example.com/abcdef...HEAD")
+
+	added := unreleased.Change(Added)
+	assert.NotNil(t, added)
+	assert.Equal(t, 1, len(added.Items))
+
+	assert.NotNil(t, added.Items[0])
+	assert.Equal(t, added.Items[0].Description, "First commit")
+}
+
 func TestChangelogVersion(t *testing.T) {
 	unreleased := &Version{Name: "Unreleased"}
 	v123 := &Version{Name: "1.2.3"}
@@ -96,6 +113,50 @@ func TestChangelogRelease(t *testing.T) {
 
 		assert.Nil(t, err)
 	})
+}
+
+func TestChangelogReleaseMinimal(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "http://example.com/abcdef..HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	v := Version{Name: "1.0.0", Link: "https://localhost/<prev>..<next>"}
+	newVersion, err := c.Release(v)
+
+	assert.Equal(t, "1.0.0", newVersion.Name)
+	assert.Equal(t, 1, len(newVersion.Changes))
+
+	unreleased := c.Version("Unreleased")
+	assert.Equal(t, "https://localhost/1.0.0..HEAD", unreleased.Link)
+
+	assert.Nil(t, err)
+}
+
+func TestChangelogReleaseFailIfNoVersionLink(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{Name: "Unreleased"},
+		},
+	}
+
+	v := Version{Name: "1.0.0"}
+	newVersion, err := c.Release(v)
+
+	assert.Nil(t, newVersion)
+	assert.Error(t, err)
 }
 
 func TestChangelogRenderLinks(t *testing.T) {
