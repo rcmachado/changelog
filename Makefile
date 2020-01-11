@@ -13,7 +13,7 @@ test:
 	go test -cover ./...
 
 lint:
-	$(LINT_BIN)/golangci-lint run
+	$(GOBIN)/golangci-lint run
 
 release: build
 	./changelog release $(V) -o CHANGELOG.md
