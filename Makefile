@@ -17,3 +17,9 @@ lint:
 
 release: build
 	./changelog release $(V) -o CHANGELOG.md
+
+.DEFAULT_GOAL:=help
+.PHONY: help
+help: COLUMN_SIZE=15
+help:  ## Display this help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-$(COLUMN_SIZE)s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
