@@ -4,7 +4,7 @@ GOBIN?=$(shell go env GOPATH)/bin
 install: ## Install tools used by the project
 	fgrep '_' tools.go | cut -f2 -d' ' | xargs go install
 	# golangci-lint project doesn't recommend to install from go modules
-	[ `which $(GOBIN)/golangci-lint` ] || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(LINT_BIN) v1.22.2
+	[ `which $(GOBIN)/golangci-lint` ] || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.22.2
 
 build:
 	go build -o changelog main.go
