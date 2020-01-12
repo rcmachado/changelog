@@ -6,6 +6,7 @@ jobs:
       - image: circleci/golang:1.13
     working_directory: /go/src/github.com/rcmachado/changelog
     environment:
+      GOBIN: /go/bin
       TEST_RESULTS: /tmp/test-results
     steps:
       - checkout
@@ -13,8 +14,7 @@ jobs:
           keys:
             - v1-pkg-cache-{{ checksum "go.sum" }}
       - run: mkdir -p $TEST_RESULTS
-      - run: go get -u github.com/jstemmer/go-junit-report
-      - run: go get -u github.com/mattn/goveralls
+      - run: make install
       - run:
           command: |
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
@@ -22,8 +22,7 @@ jobs:
       - run:
           command: |
             [ ! -z "${COVERALLS_TOKEN}" ] && goveralls -coverprofile=${TEST_RESULTS}/coverage.out -service=circle-ci -repotoken="${COVERALLS_TOKEN}"
-      - run:
-         command: make lint
+      - run: make lint
       - save_cache:
           key: v1-pkg-cache-{{ checksum "go.sum" }}
           paths:
