@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 )
 
@@ -90,7 +91,7 @@ func (c *Changelog) Release(newVersion Version) (*Version, error) {
 		Name: "Unreleased",
 	}
 
-	if (prevVersion == nil || prevVersion == oldUnreleased) && newVersion.Link == "" {
+	if ((prevVersion == nil && oldUnreleased.Link == "") || prevVersion == oldUnreleased) && newVersion.Link == "" {
 		// we don't have a previous version
 		return nil, fmt.Errorf("Could not infer the compare link")
 	}
@@ -99,6 +100,11 @@ func (c *Changelog) Release(newVersion Version) (*Version, error) {
 	if newVersion.Link != "" {
 		compareURL = strings.Replace(newVersion.Link, "<prev>", newVersion.Name, -1)
 		compareURL = strings.Replace(compareURL, "<next>", "HEAD", -1)
+	} else if prevVersion == nil || prevVersion.Link == "" {
+		r := regexp.MustCompile(`/(\w+)\.{2,3}(\w+)$`)
+		r.MatchString(oldUnreleased.Link)
+		matches := r.FindStringSubmatch(oldUnreleased.Link)
+		compareURL = strings.Replace(oldUnreleased.Link, matches[1], newVersion.Name, -1)
 	} else {
 		compareURL = strings.Replace(oldUnreleased.Link, prevVersion.Name, newVersion.Name, -1)
 	}
