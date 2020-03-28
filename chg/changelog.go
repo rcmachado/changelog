@@ -101,7 +101,7 @@ func (c *Changelog) Release(newVersion Version) (*Version, error) {
 		compareURL = strings.Replace(newVersion.Link, "<prev>", newVersion.Name, -1)
 		compareURL = strings.Replace(compareURL, "<next>", "HEAD", -1)
 	} else if prevVersion == nil || prevVersion.Link == "" {
-		r := regexp.MustCompile(`/(\w+)\.{2,3}(\w+)$`)
+		r := regexp.MustCompile(`(\w[\w\.]*?)\.{2,3}(\w[\w\.]*?)$`)
 		r.MatchString(oldUnreleased.Link)
 		matches := r.FindStringSubmatch(oldUnreleased.Link)
 		compareURL = strings.Replace(oldUnreleased.Link, matches[1], newVersion.Name, -1)

@@ -189,6 +189,31 @@ func TestChangelogReleaseNoOvewriteCompareURL(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestChangelogReleaseParseLinkFromPreviousVersion(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "https://github.com/org/repo/compare/0.2.0...HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	newVersion, err := c.Release(Version{Name: "1.0.0"})
+	assert.NoError(t, err)
+	assert.NotNil(t, newVersion)
+
+	assert.Equal(t, "https://github.com/org/repo/compare/0.2.0...1.0.0", newVersion.Link)
+}
+
 func TestChangelogRenderLinks(t *testing.T) {
 	unreleased := &Version{Name: "Unreleased", Link: "http://example.com/unreleased"}
 	v123 := &Version{Name: "1.2.3", Link: "http://example.com/1.2.3"}
