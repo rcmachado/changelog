@@ -1,0 +1,40 @@
+name: Main
+
+env:
+  GOBIN: /go/bin
+  TEST_RESULTS: /tmp/test-results
+
+on:
+  push:
+    branches: ['*']
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+  pull_request:
+    branches:
+    - master
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Run tests
+      run: |
+        trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
+        go test -cover -race -coverprofile=${TEST_RESULTS}/coverage.out -v ./... | tee ${TEST_RESULTS}/go-test.out
+
+    - name: Run lint
+      run: make lint
