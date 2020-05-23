@@ -33,6 +33,10 @@ jobs:
         if: "startsWith(github.ref, 'refs/tags/')"
         run: ./dist/changelog_linux_amd64/changelog -f CHANGELOG.md show ${GITHUB_REF##*/} > release-notes.txt
 
+      - name: Docker login
+        if: "startsWith(github.ref, 'refs/tags/')"
+        run: docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
+
       - name: Release
         uses: goreleaser/goreleaser-action@v2
         if: "startsWith(github.ref, 'refs/tags/')"
