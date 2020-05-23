@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Publish docker image to [rcmachado/changelog](https://hub.docker.com/r/rcmachado/changelog) when releasing
 
 ## [0.4.2] - 2020-03-31
 ### Fixed
