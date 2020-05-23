@@ -12,6 +12,7 @@ import (
 
 var ioStreams *IOStreams
 
+// IOStreams holds input/output streams for commands
 type IOStreams struct {
 	In  io.Reader
 	Out io.Writer
@@ -61,7 +62,7 @@ func init() {
 
 	rootCmd.AddCommand(
 		newInitCmd(ioStreams),
-		NewFmtCmd(ioStreams),
+		newFmtCmd(ioStreams),
 		newReleaseCmd(ioStreams),
 		newShowCmd(ioStreams),
 	)

@@ -66,7 +66,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 		Out: out,
 	}
 
-	fmt := NewFmtCmd(iostreams)
+	fmt := newFmtCmd(iostreams)
 	_, err := fmt.ExecuteC()
 
 	assert.Nil(t, err)
