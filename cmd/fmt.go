@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewFmtCmd(iostreams *IOStreams) *cobra.Command {
+func newFmtCmd(iostreams *IOStreams) *cobra.Command {
 	return &cobra.Command{
 		Use:   "fmt",
 		Short: "Reformat the change log file",
