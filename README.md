@@ -1,6 +1,6 @@
 # changelog
 
-[![CircleCI](https://circleci.com/gh/rcmachado/changelog.svg?style=svg)](https://circleci.com/gh/rcmachado/changelog)
+![Tests](https://github.com/rcmachado/changelog/workflows/Tests/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/rcmachado/changelog/badge.svg?branch=master)](https://coveralls.io/github/rcmachado/changelog?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rcmachado/changelog)](https://goreportcard.com/report/github.com/rcmachado/changelog)
 
