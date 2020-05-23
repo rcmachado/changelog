@@ -1,0 +1,41 @@
+name: goreleaser
+
+on:
+  pull_request:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14
+
+      - name: Build
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: build --snapshot --rm-dist
+
+      - name: Prepare release notes
+        if: "startsWith(github.ref, 'refs/tags/')"
+        run: ./dist/changelog_linux_amd64/changelog -f CHANGELOG.md show ${GITHUB_REF##*/} > release-notes.txt
+
+      - name: Release
+        uses: goreleaser/goreleaser-action@v2
+        if: "startsWith(github.ref, 'refs/tags/')"
+        with:
+          version: latest
+          args: release --release-notes release-notes.txt --rm-dist
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
