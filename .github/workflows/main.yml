@@ -35,6 +35,3 @@ jobs:
         run: |
           trap "$GOBIN/go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
           go test -cover -race -coverprofile=${TEST_RESULTS}/coverage.out -v ./... | tee ${TEST_RESULTS}/go-test.out
-
-      - name: Run lint
-        run: make lint
