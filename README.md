@@ -10,6 +10,32 @@
 It can normalize the file (`fmt`), create a release (`release`) and
 show a specific version (`show`). See [Usage](#usage) for details.
 
+## Table of Contents
+
+- [Usage](#usage)
+- [Installation](#installation)
+  - [Linux and macOS](#linux-and-macos)
+  - [Source](#source)
+- [Commands](#commands)
+  - [init](#init)
+  - [fmt](#fmt)
+  - [show](#show)
+  - [release](#release)
+- [Formatting](#formatting)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Usage
+
+```bash
+# Initialize a new CHANGELOG.md file
+$ changelog init --compare-url=https://github.com/myorg/myrepo/compare/abcdef...1234
+# Add a first message under "Added" section
+$ changelog added "Initial commit"
+# Create release
+$ changelog release 0.1.0
+```
+
 ## Installation
 
 ### Linux and macOS
@@ -19,19 +45,23 @@ from GitHub releases.
 
 There are precompiled binaries for macOS and Linux.
 
-### From source
+### Source
 
-Download and build the executable:
+Clone the repository and build the executable:
 
 ```bash
-$ go get -u github.com/rcmachado/changelog
-$ cd $GOPATH/github.com/rcmachado/changelog
-$ make build
+make build
 ```
 
-## Usage
+This will generate a `changelog` binary that can be copied to `/usr/local/bin`:
 
+```bash
+cp changelog /usr/local/bin
 ```
+
+## Commands
+
+```text
 changelog manipulate and validate markdown changelog files following the keepachangelog.com specification.
 
 Usage:
@@ -74,7 +104,7 @@ Normalize file format (see [Formatting](#formatting) for the specific
 transformation applied):
 
 ```bash
-$ changelog fmt
+changelog fmt
 ```
 
 ### show
@@ -82,13 +112,13 @@ $ changelog fmt
 Show what will be in the next release:
 
 ```bash
-$ changelog show Unreleased
+changelog show Unreleased
 ```
 
 Show the change log for a specific version:
 
 ```bash
-$ changelog show 1.2.3
+changelog show 1.2.3
 ```
 
 ### release
@@ -96,7 +126,7 @@ $ changelog show 1.2.3
 Create a new release:
 
 ```bash
-$ changelog release 1.2.4
+changelog release 1.2.4
 ```
 
 ### Formatting
@@ -114,22 +144,13 @@ Currently, the following transformations are applied:
 
 ## Contributing
 
-To contribute, you can fork the repository and submit a Pull Request.
-
-### What needs to be done?
-
-A lot of things! Take a look at the issues to find something.
-
-### I found a bug
-
-Could you please [fill an issue][] explaining what caused the issue and
-what did you expect to happen instead?
+Feel free to fork and submit a PR. You can also take a look, at the [Issues][] tab to see some ideas.
 
 ## License
 
-It's released under MIT license. See [LICENSE][] file for details.
+Licensed under MIT. See [LICENSE][] file for details.
 
 [keepachangelog.com]: https://keepachangelog.com/
 [LICENSE]: ./LICENSE
-[fill an issue]: https://github.com/rcmachado/changelog/issues
+[Issues]: https://github.com/rcmachado/changelog
 [latest version]: https://github.com/rcmachado/changelog/releases/latest
