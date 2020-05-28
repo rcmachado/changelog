@@ -1,0 +1,3 @@
+FROM scratch
+COPY changelog /
+ENTRYPOINT ["/changelog"]

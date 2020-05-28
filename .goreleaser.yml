@@ -1,4 +1,10 @@
 project_name: changelog
+
+archives:
+  - format: binary
+    files:
+      - none*
+
 builds:
   - binary: changelog
     goos:
@@ -13,6 +19,7 @@ dockers:
       - changelog
     binaries:
       - changelog
+    dockerfile: Dockerfile.goreleaser
     image_templates:
       - "rcmachado/{{.ProjectName}}:{{.Tag}}"
       - "rcmachado/{{.ProjectName}}:{{ .Major }}"
