@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.6.0] - 2020-05-28
 ### Changed
 - Change docker base image from `scratch` to `debian:slim`
 
@@ -52,7 +54,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fmt` command to reformat changelog following the spec
 - `show` command to show a specific version
 
-[Unreleased]: https://github.com/rcmachado/changelog/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/rcmachado/changelog/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/rcmachado/changelog/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/rcmachado/changelog/compare/0.4.2...0.5.0
 [0.4.2]: https://github.com/rcmachado/changelog/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/rcmachado/changelog/compare/0.4.0...0.4.1
