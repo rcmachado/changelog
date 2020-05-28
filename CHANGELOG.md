@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.6.0] - 2020-05-28
 ### Changed
-- Change docker base image from `scratch` to `debian:slim`
+- Change docker base image from `scratch` to `debian:bullseye`
 
 ## [0.5.0] - 2020-05-26
 ### Added
