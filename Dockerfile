@@ -7,6 +7,8 @@ RUN go build -o changelog .
 
 FROM alpine:latest
 
+RUN apk add --no-cache git openssh
+
 WORKDIR /app
 COPY --from=build /app/changelog /usr/local/bin/changelog
 
