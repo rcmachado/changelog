@@ -36,6 +36,9 @@ $ changelog init --compare-url=https://github.com/myorg/myrepo/compare/abcdef...
 $ changelog added "Initial commit"
 # Create release
 $ changelog release 0.1.0
+# Show latest release number
+$ changelog latest
+=> 0.1.0
 ```
 
 ## Installation
@@ -78,6 +81,7 @@ Available Commands:
   fmt         Reformat the change log file
   help        Help about any command
   init        Initializes a new changelog
+  latest      Show latest released version number
   release     Change Unreleased to [version]
   removed     Add item under 'Removed' section
   security    Add item under 'Security' section

@@ -12,7 +12,7 @@ import (
 func newLatestCmd(iostreams *IOStreams) *cobra.Command {
 	return &cobra.Command{
 		Use:   "latest",
-		Short: "Show latest version",
+		Short: "Show latest released version number",
 		Long:  `Show version number for the top (released) entry in the changelog`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
