@@ -29,6 +29,27 @@ func TestLatestCmdShowsLatestReleasedVersion(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expected, string(out.Bytes()))
 }
+func TestLatestCmdShowsLatestReleasedVersionEvenWhenNoUnreleased(t *testing.T) {
+	changelog, err := ioutil.ReadFile("testdata/legacy-changelog.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := `1.0.0
+`
+
+	out := new(bytes.Buffer)
+	iostreams := &IOStreams{
+		In:  bytes.NewBuffer(changelog),
+		Out: out,
+	}
+
+	cmd := newLatestCmd(iostreams)
+	_, err = cmd.ExecuteC()
+
+	assert.Nil(t, err)
+	assert.Equal(t, expected, string(out.Bytes()))
+}
 
 func TestLatestCmdError(t *testing.T) {
 	changelog, err := ioutil.ReadFile("testdata/empty-changelog.md")
