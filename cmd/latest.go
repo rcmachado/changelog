@@ -12,7 +12,7 @@ func newLatestCmd(iostreams *IOStreams) *cobra.Command {
 	return &cobra.Command{
 		Use:   "latest",
 		Short: "Show latest version",
-		Long:  `Show version number for the top entry in the changelog`,
+		Long:  `Show version number for the top (released) entry in the changelog`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			changelog := parser.Parse(iostreams.In)
