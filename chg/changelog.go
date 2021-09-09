@@ -150,3 +150,13 @@ func (c *Changelog) Render(w io.Writer) {
 		w.Write(content)
 	}
 }
+
+func (c *Changelog) ReleasedVersions() []Version {
+	var result []Version
+	for _, version := range c.Versions {
+		if version.Name != "Unreleased" {
+			result = append(result, *version)
+		}
+	}
+	return result
+}

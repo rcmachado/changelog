@@ -3,8 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
-
-	"github.com/rcmachado/changelog/chg"
+	
 	"github.com/rcmachado/changelog/parser"
 	"github.com/spf13/cobra"
 )
@@ -21,7 +20,7 @@ func newLatestCmd(iostreams *IOStreams) *cobra.Command {
 				cmd.SilenceUsage = true
 				return fmt.Errorf("There are no versions in the changelog yet")
 			}
-			releasedVersions := releasedVersions(changelog)
+			releasedVersions := changelog.ReleasedVersions()
 			if len(releasedVersions) == 0 {
 				cmd.SilenceUsage = true
 				return fmt.Errorf("There are no released versions in the changelog yet")
@@ -31,13 +30,4 @@ func newLatestCmd(iostreams *IOStreams) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func releasedVersions(changelog *chg.Changelog) (result []chg.Version) {
-	for _, version := range changelog.Versions {
-		if version.Name != "Unreleased" {
-			result = append(result, *version)
-		}
-	}
-	return
 }
