@@ -163,7 +163,7 @@ func TestChangelogEncodeJson(t *testing.T) {
       "yanked": false,
       "changes": [
         {
-          "type": 1,
+          "type": "added",
           "items": [
             {
               "description": "New feature"

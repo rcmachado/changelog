@@ -102,7 +102,7 @@ Hello
       "yanked": false,
       "changes": [
         {
-          "type": 2,
+          "type": "changed",
           "items": [
             {
               "description": "Out of order entries"
@@ -110,7 +110,7 @@ Hello
           ]
         },
         {
-          "type": 1,
+          "type": "added",
           "items": [
             {
               "description": "Something else"
@@ -126,7 +126,7 @@ Hello
       "yanked": false,
       "changes": [
         {
-          "type": 1,
+          "type": "added",
           "items": [
             {
               "description": "Command A"

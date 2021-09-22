@@ -3,6 +3,7 @@ package chg
 //go:generate stringer -type=ChangeType
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -12,8 +13,18 @@ import (
 // Valid change types are "Added", "Changed", "Deprecated", "Fixed",
 // "Removed" and "Security"
 type ChangeList struct {
-	Type  ChangeType `json:"type"`
-	Items []*Item    `json:"items"`
+	Type  ChangeType
+	Items []*Item
+}
+
+func (cl *ChangeList) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Type  string  `json:"type"`
+		Items []*Item `json:"items"`
+	}{
+		Type:  ChangeStringFromType(cl.Type),
+		Items: cl.Items,
+	})
 }
 
 // ChangeType is the type of the changes
@@ -29,6 +40,26 @@ const (
 	Removed
 	Security
 )
+
+// ChangeTypeFromString creates a type based on its string name
+func ChangeStringFromType(ct ChangeType) string {
+	switch ct {
+	case Added:
+		return "added"
+	case Changed:
+		return "changed"
+	case Deprecated:
+		return "deprecated"
+	case Fixed:
+		return "fixed"
+	case Removed:
+		return "removed"
+	case Security:
+		return "security"
+	default:
+		return "unknown"
+	}
+}
 
 // ChangeTypeFromString creates a type based on its string name
 func ChangeTypeFromString(ct string) ChangeType {
