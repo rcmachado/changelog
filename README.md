@@ -122,6 +122,8 @@ Show the change log for a specific version:
 changelog show 1.2.3
 ```
 
+The `show` command accepts a `--json` option which formats the version as JSON.
+
 ### release
 
 Create a new release:
@@ -142,6 +144,8 @@ Currently, the following transformations are applied:
 - Sections are sorted (eg. Added, Changed, etc)
 - Version links are put at the bottom of the file
 - List bullet is always `-`
+
+The `fmt` command accepts a `--json` option which formats the changelog as JSON.
 
 ## Contributing
 
