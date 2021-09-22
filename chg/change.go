@@ -12,8 +12,8 @@ import (
 // Valid change types are "Added", "Changed", "Deprecated", "Fixed",
 // "Removed" and "Security"
 type ChangeList struct {
-	Type  ChangeType
-	Items []*Item
+	Type  ChangeType `json:"type"`
+	Items []*Item    `json:"items"`
 }
 
 // ChangeType is the type of the changes

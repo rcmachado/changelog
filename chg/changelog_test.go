@@ -2,6 +2,7 @@ package chg
 
 import (
 	"bytes"
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -112,6 +113,83 @@ func TestChangelogRelease(t *testing.T) {
 		assert.Equal(t, "https://localhost/2.0.0..HEAD", unreleased.Link)
 
 		assert.Nil(t, err)
+	})
+}
+
+func TestChangelogEncodeJson(t *testing.T) {
+	c := Changelog{
+		Preamble: "This is the preamble",
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "http://example.com/1.0.0..HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+			{
+				Name: "1.0.0",
+				Link: "http://example.com/abcdef..1.0.0",
+			},
+			{
+				Name: "0.2.0",
+				Link: "http://example.com/abcdef..0.2.0",
+			},
+		},
+	}
+
+	t.Run("RenderJson", func(t *testing.T) {
+		buf := &bytes.Buffer{}
+		enc := json.NewEncoder(buf)
+		enc.SetIndent("", "  ")
+		err := enc.Encode(c)
+
+		assert.Nil(t, err)
+
+		result := string(buf.Bytes())
+
+		expectedJson := `{
+  "preamble": "This is the preamble",
+  "versions": [
+    {
+      "name": "Unreleased",
+      "date": "",
+      "link": "http://example.com/1.0.0..HEAD",
+      "yanked": false,
+      "changes": [
+        {
+          "type": 1,
+          "items": [
+            {
+              "description": "New feature"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1.0.0",
+      "date": "",
+      "link": "http://example.com/abcdef..1.0.0",
+      "yanked": false,
+      "changes": null
+    },
+    {
+      "name": "0.2.0",
+      "date": "",
+      "link": "http://example.com/abcdef..0.2.0",
+      "yanked": false,
+      "changes": null
+    }
+  ]
+}
+`
+		assert.Equal(t, expectedJson, result)
 	})
 }
 
