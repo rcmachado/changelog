@@ -11,8 +11,8 @@ import (
 func newShowCmd(iostreams *IOStreams) *cobra.Command {
 	var jsonFlag bool
 
-	show := &cobra.Command{
-		Use:   "show [version]",
+	command := &cobra.Command{
+		Use:   "command [version]",
 		Short: "Show changelog for [version]",
 		Long:  `Show changelog section and entries for version [version]`,
 		Args:  cobra.ExactArgs(1),
@@ -29,13 +29,12 @@ func newShowCmd(iostreams *IOStreams) *cobra.Command {
 				enc := json.NewEncoder(iostreams.Out)
 				enc.SetIndent("", "  ")
 				return enc.Encode(v)
-
 			} else {
 				v.RenderChanges(iostreams.Out)
 				return nil
 			}
 		},
 	}
-	show.Flags().BoolVar(&jsonFlag, "json", false, "output JSON")
-	return show
+	command.Flags().BoolVar(&jsonFlag, "json", false, "output JSON")
+	return command
 }
