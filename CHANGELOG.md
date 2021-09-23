@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Add `--json` flag to `fmt` and `show` commands.
+
 ## [0.7.0] - 2020-07-03
 ### Changed
 - Install git and openssh on docker image
