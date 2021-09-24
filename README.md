@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/cucumber/changelog/badge.svg?branch=master)](https://coveralls.io/github/cucumber/changelog?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cucumber/changelog)](https://goreportcard.com/report/github.com/cucumber/changelog)
 
-(T)
+(This is a fork of https://github.com/rcmachado/changelog)
 
 `changelog` is a command-line application to read and manipulate
 `CHANGELOG.md` files that follows the [keepachangelog.com][] spec.
