@@ -6,9 +6,9 @@ linters:
     - gas
     - gocyclo
     - megacheck
+    - goimports
   enable:
     - gofmt
-    - goimports
     - gosimple
     - unused
     - staticcheck
