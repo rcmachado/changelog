@@ -11,8 +11,8 @@ import (
 // Changelog is the main struct that holds all the data
 // in a format specific to the spec
 type Changelog struct {
-	Preamble string
-	Versions []*Version
+	Preamble string     `json:"preamble"`
+	Versions []*Version `json:"versions"`
 }
 
 // NewChangelog creates the Changelog struct
