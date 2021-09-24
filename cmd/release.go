@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rcmachado/changelog/chg"
-	"github.com/rcmachado/changelog/parser"
+	"github.com/cucumber/changelog/chg"
+	"github.com/cucumber/changelog/parser"
 	"github.com/spf13/cobra"
 )
 

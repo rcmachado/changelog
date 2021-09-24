@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/cucumber/changelog/badge.svg?branch=master)](https://coveralls.io/github/cucumber/changelog?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cucumber/changelog)](https://goreportcard.com/report/github.com/cucumber/changelog)
 
-(This is a fork of https://github.com/rcmachado/changelog)
+(T)
 
 `changelog` is a command-line application to read and manipulate
 `CHANGELOG.md` files that follows the [keepachangelog.com][] spec.
@@ -124,8 +124,6 @@ Show the change log for a specific version:
 changelog show 1.2.3
 ```
 
-The `show` command accepts a `--json` option which formats the version as JSON.
-
 ### release
 
 Create a new release:
@@ -146,8 +144,6 @@ Currently, the following transformations are applied:
 - Sections are sorted (eg. Added, Changed, etc)
 - Version links are put at the bottom of the file
 - List bullet is always `-`
-
-The `fmt` command accepts a `--json` option which formats the changelog as JSON.
 
 ## Contributing
 

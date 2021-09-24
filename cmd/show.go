@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/rcmachado/changelog/parser"
+	"github.com/cucumber/changelog/parser"
 	"github.com/spf13/cobra"
 )
 

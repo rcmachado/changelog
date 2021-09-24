@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
-	"github.com/rcmachado/changelog/parser"
+	"github.com/cucumber/changelog/parser"
 	"github.com/spf13/cobra"
 )
 

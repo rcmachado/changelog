@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/rcmachado/changelog/chg"
+	"github.com/cucumber/changelog/chg"
 	blackfriday "github.com/russross/blackfriday/v2"
 )
 
