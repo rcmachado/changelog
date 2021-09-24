@@ -1,8 +1,10 @@
 # changelog
 
-![Tests](https://github.com/rcmachado/changelog/workflows/Tests/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/rcmachado/changelog/badge.svg?branch=master)](https://coveralls.io/github/rcmachado/changelog?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/rcmachado/changelog)](https://goreportcard.com/report/github.com/rcmachado/changelog)
+![Tests](https://github.com/cucumber/changelog/workflows/Tests/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/cucumber/changelog/badge.svg?branch=master)](https://coveralls.io/github/cucumber/changelog?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cucumber/changelog)](https://goreportcard.com/report/github.com/cucumber/changelog)
+
+(This is a fork of https://github.com/rcmachado/changelog)
 
 `changelog` is a command-line application to read and manipulate
 `CHANGELOG.md` files that follows the [keepachangelog.com][] spec.
@@ -95,7 +97,7 @@ Outputs a changelog with only preamble and Unreleased version to standard output
 
 ```bash
 $ touch CHANGELOG.md
-$ changelog init -o CHANGELOG.md --compare-url https://github.com/rcmachado/changelog/compare/abcdef...HEAD
+$ changelog init -o CHANGELOG.md --compare-url https://github.com/cucumber/changelog/compare/abcdef...HEAD
 Changelog file 'CHANGELOG.md' created.
 ```
 
@@ -157,5 +159,5 @@ Licensed under MIT. See [LICENSE][] file for details.
 
 [keepachangelog.com]: https://keepachangelog.com/
 [LICENSE]: ./LICENSE
-[Issues]: https://github.com/rcmachado/changelog
-[latest version]: https://github.com/rcmachado/changelog/releases/latest
+[Issues]: https://github.com/cucumber/changelog
+[latest version]: https://github.com/cucumber/changelog/releases/latest
