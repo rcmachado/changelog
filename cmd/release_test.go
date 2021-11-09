@@ -162,7 +162,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 	}
 
 	release := newReleaseCmd(iostreams)
-	release.SetArgs([]string{"0.1.0", "--release-date", "2021-10-18", "--tag-pattern", "v%s"})
+	release.SetArgs([]string{"0.1.0", "--release-date", "2021-10-18", "--tag-format", "v%s"})
 	_, err := release.ExecuteC()
 
 	assert.Nil(t, err)
