@@ -132,6 +132,12 @@ Create a new release:
 changelog release 1.2.4
 ```
 
+If you use a prefix for git tags, specify a tag format:
+
+```bash
+changelog release --tag-format "v%s" 1.2.4
+```
+
 ### Formatting
 
 `fmt` command normalizes the changelog file. The idea is to always have

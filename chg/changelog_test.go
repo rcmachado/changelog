@@ -95,7 +95,7 @@ func TestChangelogRelease(t *testing.T) {
 	}
 
 	t.Run("default", func(t *testing.T) {
-		newVersion, err := c.Release(Version{Name: "2.0.0"})
+		newVersion, err := c.Release(Version{Name: "2.0.0"}, "%s")
 
 		assert.Nil(t, err)
 		assert.Equal(t, "2.0.0", newVersion.Name)
@@ -105,7 +105,7 @@ func TestChangelogRelease(t *testing.T) {
 
 	t.Run("explicit-compare-url", func(t *testing.T) {
 		v := Version{Name: "2.0.0", Link: "https://localhost/<prev>..<next>"}
-		newVersion, err := c.Release(v)
+		newVersion, err := c.Release(v, "%s")
 
 		assert.Equal(t, "2.0.0", newVersion.Name)
 
@@ -212,7 +212,7 @@ func TestChangelogReleaseMinimal(t *testing.T) {
 	}
 
 	v := Version{Name: "1.0.0", Link: "https://localhost/<prev>..<next>"}
-	newVersion, err := c.Release(v)
+	newVersion, err := c.Release(v, "%s")
 
 	assert.Equal(t, "1.0.0", newVersion.Name)
 	assert.Equal(t, 1, len(newVersion.Changes))
@@ -231,7 +231,7 @@ func TestChangelogReleaseFailIfNoVersionLink(t *testing.T) {
 	}
 
 	v := Version{Name: "1.0.0"}
-	newVersion, err := c.Release(v)
+	newVersion, err := c.Release(v, "%s")
 
 	assert.Nil(t, newVersion)
 	assert.Error(t, err)
@@ -256,7 +256,7 @@ func TestChangelogReleaseNoOvewriteCompareURL(t *testing.T) {
 	}
 
 	v := Version{Name: "1.0.0"}
-	newVersion, err := c.Release(v)
+	newVersion, err := c.Release(v, "%s")
 
 	assert.Equal(t, "1.0.0", newVersion.Name)
 	assert.Equal(t, 1, len(newVersion.Changes))
@@ -285,11 +285,36 @@ func TestChangelogReleaseParseLinkFromPreviousVersion(t *testing.T) {
 		},
 	}
 
-	newVersion, err := c.Release(Version{Name: "1.0.0"})
+	newVersion, err := c.Release(Version{Name: "1.0.0"}, "%s")
 	assert.NoError(t, err)
 	assert.NotNil(t, newVersion)
 
 	assert.Equal(t, "https://github.com/org/repo/compare/0.2.0...1.0.0", newVersion.Link)
+}
+
+func TestChangelogReleaseParseLinkFromPreviousVersionWithCustomPattern(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "https://github.com/org/repo/compare/v0.2.0...HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	newVersion, err := c.Release(Version{Name: "1.0.0"}, "v%s")
+	assert.NoError(t, err)
+	assert.NotNil(t, newVersion)
+
+	assert.Equal(t, "https://github.com/org/repo/compare/v0.2.0...v1.0.0", newVersion.Link)
 }
 
 func TestChangelogRenderLinks(t *testing.T) {
