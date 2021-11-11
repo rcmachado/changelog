@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- `latest` command to show latest version number ([#77](https://github.com/rcmachado/changelog/pull/77))
+- `latest` command to show latest release version number ([#5](https://github.com/cucumber/changelog/pull/5))
 
 ## [0.9.2] - 2021-11-11
 ### Added
@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - config for releasing to Cucumber's docker account
+
+## [0.9.1] - 2021-11-11
+Failed release
 
 ## [0.9.0] - 2021-11-11
 ### Fixed
