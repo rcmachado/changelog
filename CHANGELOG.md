@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.9.0] - 2021-11-11
 ### Fixed
 - Show command was broken ([#4](https://github.com/cucumber/changelog/issues/4))
 
@@ -68,7 +70,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fmt` command to reformat changelog following the spec
 - `show` command to show a specific version
 
-[Unreleased]: https://github.com/rcmachado/changelog/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/rcmachado/changelog/compare/0.9.0...HEAD
+[0.9.0]: https://github.com/rcmachado/changelog/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/rcmachado/changelog/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/rcmachado/changelog/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/rcmachado/changelog/compare/0.5.0...0.6.0
