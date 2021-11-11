@@ -10,6 +10,7 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    environment: Release
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,7 +36,7 @@ jobs:
 
       - name: Docker login
         if: "startsWith(github.ref, 'refs/tags/')"
-        run: docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
+        run: docker login -u '${{ secrets.DOCKER_HUB_USER }}' -p '${{ secrets.DOCKER_HUB_PASSWORD }}'
 
       - name: Release
         uses: goreleaser/goreleaser-action@v2
