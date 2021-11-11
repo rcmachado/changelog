@@ -1,14 +1,17 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/rcmachado/changelog/parser"
+	"github.com/cucumber/changelog/parser"
 	"github.com/spf13/cobra"
 )
 
 func newShowCmd(iostreams *IOStreams) *cobra.Command {
-	return &cobra.Command{
+	var jsonFlag bool
+
+	command := &cobra.Command{
 		Use:   "show [version]",
 		Short: "Show changelog for [version]",
 		Long:  `Show changelog section and entries for version [version]`,
@@ -22,9 +25,16 @@ func newShowCmd(iostreams *IOStreams) *cobra.Command {
 				cmd.SilenceUsage = true
 				return fmt.Errorf("Unknown version: '%s'\n", version)
 			}
-
-			v.RenderChanges(iostreams.Out)
-			return nil
+			if jsonFlag {
+				enc := json.NewEncoder(iostreams.Out)
+				enc.SetIndent("", "  ")
+				return enc.Encode(v)
+			} else {
+				v.RenderChanges(iostreams.Out)
+				return nil
+			}
 		},
 	}
+	command.Flags().BoolVar(&jsonFlag, "json", false, "output JSON")
+	return command
 }

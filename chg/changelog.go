@@ -11,8 +11,8 @@ import (
 // Changelog is the main struct that holds all the data
 // in a format specific to the spec
 type Changelog struct {
-	Preamble string
-	Versions []*Version
+	Preamble string     `json:"preamble"`
+	Versions []*Version `json:"versions"`
 }
 
 // NewChangelog creates the Changelog struct
@@ -78,7 +78,7 @@ func (c *Changelog) AddItem(section ChangeType, message string) {
 }
 
 // Release transforms Unreleased into the version informed
-func (c *Changelog) Release(newVersion Version) (*Version, error) {
+func (c *Changelog) Release(newVersion Version, tagFormat string) (*Version, error) {
 	oldUnreleased := c.Version("Unreleased")
 	var prevVersion *Version
 	if len(c.Versions) > 1 {
@@ -101,17 +101,17 @@ func (c *Changelog) Release(newVersion Version) (*Version, error) {
 		compareURL = strings.Replace(newVersion.Link, "<prev>", newVersion.Name, -1)
 		compareURL = strings.Replace(compareURL, "<next>", "HEAD", -1)
 	} else if prevVersion == nil || prevVersion.Link == "" {
-		r := regexp.MustCompile(`(\w[\w\.]*?)\.{2,3}(\w[\w\.]*?)$`)
+		r := regexp.MustCompile(`(\w[\w.]*?)\.{2,3}(\w[\w.]*?)$`)
 		r.MatchString(oldUnreleased.Link)
 		matches := r.FindStringSubmatch(oldUnreleased.Link)
-		compareURL = strings.Replace(oldUnreleased.Link, matches[1], newVersion.Name, -1)
+		compareURL = strings.Replace(oldUnreleased.Link, matches[1], fmt.Sprintf(tagFormat, newVersion.Name), -1)
 	} else {
-		compareURL = strings.Replace(oldUnreleased.Link, prevVersion.Name, newVersion.Name, -1)
+		compareURL = strings.Replace(oldUnreleased.Link, fmt.Sprintf(tagFormat, prevVersion.Name), fmt.Sprintf(tagFormat, newVersion.Name), -1)
 	}
 
 	newUnreleased.Link = compareURL
 
-	oldUnreleased.Link = strings.Replace(oldUnreleased.Link, "HEAD", newVersion.Name, -1)
+	oldUnreleased.Link = strings.Replace(oldUnreleased.Link, "HEAD", fmt.Sprintf(tagFormat, newVersion.Name), -1)
 	oldUnreleased.Name = newVersion.Name
 	oldUnreleased.Date = newVersion.Date
 
@@ -149,4 +149,14 @@ func (c *Changelog) Render(w io.Writer) {
 		io.WriteString(w, "\n")
 		w.Write(content)
 	}
+}
+
+func (c *Changelog) ReleasedVersions() []Version {
+	var result []Version
+	for _, version := range c.Versions {
+		if version.Name != "Unreleased" {
+			result = append(result, *version)
+		}
+	}
+	return result
 }

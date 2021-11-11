@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rcmachado/changelog/chg"
-	"github.com/rcmachado/changelog/parser"
+	"github.com/cucumber/changelog/chg"
+	"github.com/cucumber/changelog/parser"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +25,7 @@ It will normalize the output with the new version.
 
 			releaseDate, _ := fs.GetString("release-date")
 			compareURL, _ := fs.GetString("compare-url")
+			tagFormat, _ := fs.GetString("tag-format")
 
 			version := chg.Version{
 				Name: args[0],
@@ -37,7 +38,7 @@ It will normalize the output with the new version.
 
 			changelog := parser.Parse(iostreams.In)
 
-			_, err := changelog.Release(version)
+			_, err := changelog.Release(version, tagFormat)
 			if err != nil {
 				cmd.SilenceUsage = true
 				return fmt.Errorf("Failed to create release '%s': %s\n", args[0], err)
@@ -53,6 +54,7 @@ It will normalize the output with the new version.
 	today := time.Now().Format(dateFormat)
 	fs.StringP("release-date", "d", today, "Release date")
 	fs.StringP("compare-url", "c", "", "Overwrite compare URL for Unreleased section")
+	fs.StringP("tag-format", "t", "%s", "Printf format string to use for tags in compare urls")
 
 	return cmd
 }

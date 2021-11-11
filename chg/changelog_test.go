@@ -2,6 +2,7 @@ package chg
 
 import (
 	"bytes"
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -94,7 +95,7 @@ func TestChangelogRelease(t *testing.T) {
 	}
 
 	t.Run("default", func(t *testing.T) {
-		newVersion, err := c.Release(Version{Name: "2.0.0"})
+		newVersion, err := c.Release(Version{Name: "2.0.0"}, "%s")
 
 		assert.Nil(t, err)
 		assert.Equal(t, "2.0.0", newVersion.Name)
@@ -104,7 +105,7 @@ func TestChangelogRelease(t *testing.T) {
 
 	t.Run("explicit-compare-url", func(t *testing.T) {
 		v := Version{Name: "2.0.0", Link: "https://localhost/<prev>..<next>"}
-		newVersion, err := c.Release(v)
+		newVersion, err := c.Release(v, "%s")
 
 		assert.Equal(t, "2.0.0", newVersion.Name)
 
@@ -112,6 +113,83 @@ func TestChangelogRelease(t *testing.T) {
 		assert.Equal(t, "https://localhost/2.0.0..HEAD", unreleased.Link)
 
 		assert.Nil(t, err)
+	})
+}
+
+func TestChangelogEncodeJson(t *testing.T) {
+	c := Changelog{
+		Preamble: "This is the preamble",
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "http://example.com/1.0.0..HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+			{
+				Name: "1.0.0",
+				Link: "http://example.com/abcdef..1.0.0",
+			},
+			{
+				Name: "0.2.0",
+				Link: "http://example.com/abcdef..0.2.0",
+			},
+		},
+	}
+
+	t.Run("RenderJson", func(t *testing.T) {
+		buf := &bytes.Buffer{}
+		enc := json.NewEncoder(buf)
+		enc.SetIndent("", "  ")
+		err := enc.Encode(c)
+
+		assert.Nil(t, err)
+
+		result := string(buf.Bytes())
+
+		expectedJson := `{
+  "preamble": "This is the preamble",
+  "versions": [
+    {
+      "name": "Unreleased",
+      "date": "",
+      "link": "http://example.com/1.0.0..HEAD",
+      "yanked": false,
+      "changes": [
+        {
+          "type": "added",
+          "items": [
+            {
+              "description": "New feature"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1.0.0",
+      "date": "",
+      "link": "http://example.com/abcdef..1.0.0",
+      "yanked": false,
+      "changes": null
+    },
+    {
+      "name": "0.2.0",
+      "date": "",
+      "link": "http://example.com/abcdef..0.2.0",
+      "yanked": false,
+      "changes": null
+    }
+  ]
+}
+`
+		assert.Equal(t, expectedJson, result)
 	})
 }
 
@@ -134,7 +212,7 @@ func TestChangelogReleaseMinimal(t *testing.T) {
 	}
 
 	v := Version{Name: "1.0.0", Link: "https://localhost/<prev>..<next>"}
-	newVersion, err := c.Release(v)
+	newVersion, err := c.Release(v, "%s")
 
 	assert.Equal(t, "1.0.0", newVersion.Name)
 	assert.Equal(t, 1, len(newVersion.Changes))
@@ -153,7 +231,7 @@ func TestChangelogReleaseFailIfNoVersionLink(t *testing.T) {
 	}
 
 	v := Version{Name: "1.0.0"}
-	newVersion, err := c.Release(v)
+	newVersion, err := c.Release(v, "%s")
 
 	assert.Nil(t, newVersion)
 	assert.Error(t, err)
@@ -178,7 +256,7 @@ func TestChangelogReleaseNoOvewriteCompareURL(t *testing.T) {
 	}
 
 	v := Version{Name: "1.0.0"}
-	newVersion, err := c.Release(v)
+	newVersion, err := c.Release(v, "%s")
 
 	assert.Equal(t, "1.0.0", newVersion.Name)
 	assert.Equal(t, 1, len(newVersion.Changes))
@@ -207,11 +285,36 @@ func TestChangelogReleaseParseLinkFromPreviousVersion(t *testing.T) {
 		},
 	}
 
-	newVersion, err := c.Release(Version{Name: "1.0.0"})
+	newVersion, err := c.Release(Version{Name: "1.0.0"}, "%s")
 	assert.NoError(t, err)
 	assert.NotNil(t, newVersion)
 
 	assert.Equal(t, "https://github.com/org/repo/compare/0.2.0...1.0.0", newVersion.Link)
+}
+
+func TestChangelogReleaseParseLinkFromPreviousVersionWithCustomPattern(t *testing.T) {
+	c := Changelog{
+		Versions: []*Version{
+			{
+				Name: "Unreleased",
+				Link: "https://github.com/org/repo/compare/v0.2.0...HEAD",
+				Changes: []*ChangeList{
+					{
+						Type: Added,
+						Items: []*Item{
+							{Description: "New feature"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	newVersion, err := c.Release(Version{Name: "1.0.0"}, "v%s")
+	assert.NoError(t, err)
+	assert.NotNil(t, newVersion)
+
+	assert.Equal(t, "https://github.com/org/repo/compare/v0.2.0...v1.0.0", newVersion.Link)
 }
 
 func TestChangelogRenderLinks(t *testing.T) {

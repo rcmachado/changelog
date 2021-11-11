@@ -8,11 +8,11 @@ import (
 // Version stores information about the version being defined and
 // its sections
 type Version struct {
-	Name    string
-	Date    string // Date in the format YYYY-MM-DD
-	Link    string
-	Yanked  bool // True if the release was yanked/removed
-	Changes []*ChangeList
+	Name    string        `json:"name"`
+	Date    string        `json:"date"` // Date in the format YYYY-MM-DD
+	Link    string        `json:"link"`
+	Yanked  bool          `json:"yanked"` // True if the release was yanked/removed
+	Changes []*ChangeList `json:"changes"`
 }
 
 // Change returns the Change with name

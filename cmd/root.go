@@ -65,6 +65,7 @@ func init() {
 		newFmtCmd(ioStreams),
 		newReleaseCmd(ioStreams),
 		newShowCmd(ioStreams),
+		newLatestCmd(ioStreams),
 	)
 
 	manipulationCmds := newChangeTypeCmds(ioStreams)

@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.10.0] - 2021-11-11
+### Added
+- `latest` command to show latest release version number ([#5](https://github.com/cucumber/changelog/pull/5))
+
+## [0.9.2] - 2021-11-11
+### Added
+- ARM64 release build
+
+### Fixed
+- config for releasing to Cucumber's docker account
+
+## 0.9.1 - 2021-11-11
+
+## [0.9.0] - 2021-11-11
+### Fixed
+- Show command was broken ([#4](https://github.com/cucumber/changelog/issues/4))
+
+## [0.8.0] - 2021-11-11
+### Added
+- Add `--json` flag to `fmt` and `show` commands. ([#1](https://github.com/cucumber/changelog/pull/1))
+- Add `--tag-format` to `release` command. ([#2](https://github.com/cucumber/changelog/pull/2))
+
 ## [0.7.0] - 2020-07-03
 ### Changed
 - Install git and openssh on docker image
@@ -61,7 +83,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fmt` command to reformat changelog following the spec
 - `show` command to show a specific version
 
-[Unreleased]: https://github.com/rcmachado/changelog/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/rcmachado/changelog/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/rcmachado/changelog/compare/0.9.2...0.10.0
+[0.9.2]: https://github.com/rcmachado/changelog/compare/0.9.0...0.9.2
+[0.9.0]: https://github.com/rcmachado/changelog/compare/0.8.0...0.9.0
+[0.8.0]: https://github.com/rcmachado/changelog/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/rcmachado/changelog/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/rcmachado/changelog/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/rcmachado/changelog/compare/0.4.2...0.5.0

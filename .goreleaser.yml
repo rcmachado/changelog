@@ -7,16 +7,13 @@ builds:
       - linux
     goarch:
       - amd64
+      - arm64
 dockers:
   - goos: linux
     goarch: amd64
-    builds:
-      - changelog
-    binaries:
-      - changelog
     dockerfile: Dockerfile.goreleaser
     image_templates:
-      - "rcmachado/{{.ProjectName}}:{{.Tag}}"
-      - "rcmachado/{{.ProjectName}}:{{ .Major }}"
-      - "rcmachado/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}"
-      - "rcmachado/{{.ProjectName}}:latest"
+      - "cucumber/{{.ProjectName}}:{{.Tag}}"
+      - "cucumber/{{.ProjectName}}:{{ .Major }}"
+      - "cucumber/{{.ProjectName}}:{{ .Major }}.{{ .Minor }}"
+      - "cucumber/{{.ProjectName}}:latest"

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/rcmachado/changelog/cmd"
+import "github.com/cucumber/changelog/cmd"
 
 func main() {
 	cmd.Execute()
