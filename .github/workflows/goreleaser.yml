@@ -1,6 +1,7 @@
 name: goreleaser
 
 on:
+  pull_request
   push:
     branches:
       - main
@@ -8,9 +9,8 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
-  goreleaser:
+  build:
     runs-on: ubuntu-latest
-    environment: Release
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,25 +24,27 @@ jobs:
           go-version: 1.14
 
       - name: Build
-        # if: "!startsWith(github.ref, 'refs/tags/')"
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
           args: build --snapshot --rm-dist
 
-      - name: Prepare release notes
-        if: "startsWith(github.ref, 'refs/tags/')"
-        run: ./dist/changelog_linux_amd64/changelog -f CHANGELOG.md show ${GITHUB_REF##*/} > release-notes.txt
+    release:
+      runs-on: ubuntu-latest
+      environment: Release
+      needs: build
+      if: "startsWith(github.ref, 'refs/tags/')"
+      steps:
+        - name: Prepare release notes
+          run: ./dist/changelog_linux_amd64/changelog -f CHANGELOG.md show ${GITHUB_REF##*/} > release-notes.txt
 
-      - name: Docker login
-        if: "startsWith(github.ref, 'refs/tags/')"
-        run: docker login -u '${{ secrets.DOCKER_HUB_USER }}' -p '${{ secrets.DOCKER_HUB_PASSWORD }}'
+        - name: Docker login
+          run: docker login -u '${{ secrets.DOCKER_HUB_USER }}' -p '${{ secrets.DOCKER_HUB_PASSWORD }}'
 
-      - name: Release
-        uses: goreleaser/goreleaser-action@v2
-        if: "startsWith(github.ref, 'refs/tags/')"
-        with:
-          version: latest
-          args: release --release-notes release-notes.txt --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Release
+          uses: goreleaser/goreleaser-action@v2
+          with:
+            version: latest
+            args: release --release-notes release-notes.txt --rm-dist
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
