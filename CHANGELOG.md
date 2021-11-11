@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
-- Add `--json` flag to `fmt` and `show` commands.
+- Add `--json` flag to `fmt` and `show` commands. ([#1](https://github.com/cucumber/changelog/pull/1))
+- Add `--tag-format` to `release` command. ([#2](https://github.com/cucumber/changelog/pull/2))
 
 ## [0.7.0] - 2020-07-03
 ### Changed
