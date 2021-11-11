@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"io"
-	
-	"github.com/rcmachado/changelog/parser"
+
+	"github.com/cucumber/changelog/parser"
 	"github.com/spf13/cobra"
 )
 
