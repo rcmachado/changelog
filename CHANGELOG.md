@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Show command was broken ([#4](https://github.com/cucumber/changelog/issues/4))
 
 ## [0.8.0] - 2021-11-11
 ### Added
