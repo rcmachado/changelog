@@ -12,7 +12,7 @@ func newShowCmd(iostreams *IOStreams) *cobra.Command {
 	var jsonFlag bool
 
 	command := &cobra.Command{
-		Use:   "command [version]",
+		Use:   "show [version]",
 		Short: "Show changelog for [version]",
 		Long:  `Show changelog section and entries for version [version]`,
 		Args:  cobra.ExactArgs(1),
